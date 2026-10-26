@@ -1,170 +1,162 @@
 # Cisco Catalyst PoE Operational Collection
 
-Last updated: 2026-09-18
+Last updated: 2026-10-24
 
-SNMP validated against: Catalyst 3850 running IOS XE 16.12.14, with two PSE
-groups and 96 PoE ports, using SNMPv3 authentication and privacy.
+Tested against: Catalyst 3850 running IOS XE 16.12.14, with two PSE groups and 96 PoE ports, using SNMPv3 authentication and privacy (over SNMP only)
 
-ThirdEye import and scheduled collection have not yet been validated.
+This monitor set is for: Power over Ethernet on Cisco Catalyst switches: PSE capacity, consumption and budget, and per-port state, faults and power.
 
-This example collects Power over Ethernet (PoE) capacity, consumption, budget
-headroom, per-port power delivery state, and fault counters. It was developed
-for PoE-capable Catalyst 3850 switches. Other Cisco platforms may implement
-the same MIBs, but must be validated independently.
+The collection is a starting point. It defines no alert policies or thresholds.
 
-The collection is read-only. It does not enable or disable PoE, change port
-priorities, configure power policing, or install alert policies or dashboards.
+Interface traffic and errors are not included: assign **Standard Network Interfaces - Health and Performance Collection** to the same devices for those.
 
 ## Requirements
 
-- The switch is present in ThirdEye inventory and reachable over SNMP,
-  normally UDP port 161.
-- A working SNMP credential is assigned to the switch. SNMPv3 authentication
-  and privacy are recommended.
-- The SNMP view permits both `1.3.6.1.2.1.105` and
-  `1.3.6.1.4.1.9.9.402`.
-- `POWER-ETHERNET-MIB` and `CISCO-POWER-ETHERNET-EXT-MIB`, including their
-  imported dependencies, are installed in ThirdEye.
-- The hardware supports PoE and exposes the required tables. Non-PoE
-  Catalyst models are not appropriate targets.
+Before importing the monitor set, confirm that:
 
-The vendor MIBs and credentials are not included. Obtain the MIBs from the
-[Cisco MIB download site](https://cfnng.cisco.com/mibs) or Cisco's official
-[MIB repository](https://github.com/cisco/cisco-mibs/tree/main/v2).
+- The device has been added to the ThirdEye inventory.
+- ThirdEye can reach the device's SNMP agent, normally over UDP port 161.
+- A working SNMP credential has been assigned to the device in ThirdEye. SNMPv3 with authentication and privacy is recommended.
+- The SNMP view permits both `1.3.6.1.2.1.105` and `1.3.6.1.4.1.9.9.402`.
+- The switch supports PoE and exposes the required tables; non-PoE Catalyst models are not appropriate targets.
+- The MIB modules listed below are loaded in ThirdEye.
+
+### MIB modules
+
+The collection uses these modules:
+
+- `CISCO-POWER-ETHERNET-EXT-MIB`
+- `POWER-ETHERNET-MIB`
+
+ThirdEye's built-in MIB store already includes all of these modules. Cisco PoE - PSE Budget and Headroom needs the vendor's current file of `CISCO-POWER-ETHERNET-EXT-MIB` imported with its dependencies: the objects it polls are not in ThirdEye's built-in copies. Without that import those monitors collect nothing; the other monitors are unaffected. The MIB files are not included with this collection; to install or update a module, obtain the files as described below and import them with their dependencies.
+
+### Obtaining the Cisco MIBs
+
+Obtain `POWER-ETHERNET-MIB` and `CISCO-POWER-ETHERNET-EXT-MIB`, with their dependencies, from the [Cisco MIB download site](https://cfnng.cisco.com/mibs) or Cisco's official [MIB repository](https://github.com/cisco/cisco-mibs/tree/main/v2).
 
 ## Installation
 
-1. Import the required MIB modules and dependencies into ThirdEye.
-2. In **Inventory**, select the switch and run **Tools > SNMP System Info**.
-   Confirm that the query succeeds using its assigned SNMP credential.
-3. Under **Monitors > Sets**, import
-   `Cisco Catalyst PoE - Operational Collection.3em`.
-4. Assign **Cisco Catalyst PoE - Operational Collection** to the intended
-   PoE-capable switches.
-5. Wait at least one collection interval, then inspect the four monitors
-   under the device's **Monitors** view.
+1. Import the MIB modules listed under Requirements, for the monitors that need them.
+2. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
+3. Go to **Monitors > Sets** and import `Cisco Catalyst PoE - Operational Collection.3em`.
+4. Assign **Cisco Catalyst PoE - Operational Collection** to the appropriate devices.
+5. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
-Automatic assignment is disabled. All four monitors poll every minute and
-use three-month retention, following the other operational examples.
+Automatic assignment to newly discovered devices is disabled in the set. Review the set before enabling automatic assignment in your environment.
 
 ## Included monitors
 
-### Cisco PoE - PSE Capacity and Consumption
+The set contains 5 SNMP monitors. Metrics carry friendly names; each lists the MIB object it reads or the formula it computes.
 
-Collects `POWER-ETHERNET-MIB::pethMainPseTable`, indexed by PSE group:
+### Cisco PoE - PSE Capacity and Consumption (1 minute)
 
-- `pethMainPsePower`: nominal capacity in watts.
-- `pethMainPseOperStatus`: on, off, or faulty.
-- `pethMainPseConsumptionPower`: measured consumption in watts.
-- `pethMainPseUsageThreshold`: the switch's configured usage threshold,
-  expressed as a percentage. Collecting it does not create a ThirdEye alert.
+Power over Ethernet (PoE) per power sourcing equipment (PSE) group: nominal capacity, operational status, measured consumption against it, and the configured usage threshold.
 
-### Cisco PoE - PSE Budget and Headroom
+From `POWER-ETHERNET-MIB::pethMainPseTable`.
 
-Collects `CISCO-POWER-ETHERNET-EXT-MIB::cpeExtMainPseTable`, indexed by the
-same PSE group:
+- `CapacityW`: Nominal PoE capacity, watts (`pethMainPsePower`).
+- `OperStatus`: PSE status (1 on, 2 off, 3 faulty) (`pethMainPseOperStatus`).
+- `ConsumptionW`: Measured PoE consumption, watts (`pethMainPseConsumptionPower`).
+- `ConsumptionPct`: Measured consumption, percent of capacity (`$ConsumptionW * 100.0 / $CapacityW`).
+- `UsageThresholdPct`: The switch's configured usage threshold, percent (`pethMainPseUsageThreshold`).
 
-- `cpeExtMainPseEntPhyIndex`: corresponding ENTITY-MIB physical index.
-- `cpeExtMainPseDescr`: PSE description.
-- `cpeExtMainPsePwrMonitorCapable`: power-monitoring capability.
-- `cpeExtMainPseUsedPower`: Cisco-reported used budget in milliwatts.
-- `cpeExtMainPseRemainingPower`: remaining budget in milliwatts.
+### Cisco PoE - PSE Budget and Headroom (1 minute)
 
-Keep budget usage separate from measured consumption. On the validation
-switch, one group reported approximately 22 W of measured consumption but
-51.6 W of used budget. These values are not interchangeable. For budget
-utilization, use the Cisco used/remaining values together; do not substitute
-measured consumption for used budget when assessing headroom.
+Power over Ethernet (PoE) budget per PSE group as Cisco reports it: used and remaining budget and the share used, with the group's description, physical index and power-monitoring capability. Budget is not measured consumption: on the published module's test switch, 22 W measured was 51.6 W of budget.
 
-### Cisco PoE - Port State and Faults
+From `CISCO-POWER-ETHERNET-EXT-MIB::cpeExtMainPseTable`, one row per `cpeExtMainPseDescr`.
+Needs `CISCO-POWER-ETHERNET-EXT-MIB` imported: the objects this monitor polls are not in ThirdEye's built-in MIB store (whose copy of `CISCO-POWER-ETHERNET-EXT-MIB` does not define them), and their OIDs and types are those of the published logicvein-monitors module it ports.
 
-Collects `POWER-ETHERNET-MIB::pethPsePortTable`, indexed by
-`pethPsePortGroupIndex.pethPsePortIndex`:
+- `UsedBudgetMw`: Used PoE budget, milliwatts (`cpeExtMainPseUsedPower`).
+- `RemainingBudgetMw`: Remaining PoE budget, milliwatts (`cpeExtMainPseRemainingPower`).
+- `BudgetUsedPct`: Used budget, percent of used plus remaining (`$UsedBudgetMw * 100.0 / ($UsedBudgetMw + $RemainingBudgetMw)`).
+- `EntPhysicalIndex`: ENTITY-MIB physical index of the PSE (`cpeExtMainPseEntPhyIndex`).
+- `MonitorCapable`: Whether the PSE can monitor power (TruthValue: 1 true, 2 false) (`cpeExtMainPsePwrMonitorCapable`).
 
-- `pethPsePortAdminEnable`
-- `pethPsePortDetectionStatus`
-- `pethPsePortPowerPriority`
-- `pethPsePortPowerClassifications`
-- `pethPsePortMPSAbsentCounter`
-- `pethPsePortInvalidSignatureCounter`
-- `pethPsePortPowerDeniedCounter`
-- `pethPsePortOverLoadCounter`
-- `pethPsePortShortCounter`
+### Cisco PoE - Port State (1 minute)
 
-An enabled, unused port normally reports `searching`, not `deliveringPower`.
-Do not treat every non-delivering port as a fault. Power classification is
-meaningful only while the port is delivering power. The MIB enumeration
-values are one-based: `class0` is value 1, through `class4` as value 5.
+Power over Ethernet (PoE) on each port: whether it is enabled, its detection status, priority and power class. Rows are identified by PSE group and port, which are not ifIndex values. An enabled port with nothing attached reports searching.
 
-Fault and MPS-absent values are cumulative Counter32 objects, not present-state
-flags. Look for increases over a baseline, accounting for counter wraps and
-resets; a historical nonzero value does not establish an ongoing fault.
-Confirm whether the ThirdEye view displays the counter or a derived rate
-before selecting an alert condition. MPS absence can reflect device removal
-and is not necessarily a hardware failure.
+From `POWER-ETHERNET-MIB::pethPsePortTable`.
 
-### Cisco PoE - Port Power
+- `AdminEnabled`: Whether PoE is enabled on the port (TruthValue: 1 true, 2 false) (`pethPsePortAdminEnable`).
+- `DetectionStatus`: Detection status (1 disabled, 2 searching, 3 deliveringPower, 4 fault, 5 test, 6 otherFault) (`pethPsePortDetectionStatus`).
+- `Priority`: Power priority (1 critical, 2 high, 3 low) (`pethPsePortPowerPriority`).
+- `PowerClass`: Power class, meaningful while delivering power (1 class0, 2 class1, 3 class2, 4 class3, 5 class4) (`pethPsePortPowerClassifications`).
 
-Collects `CISCO-POWER-ETHERNET-EXT-MIB::cpeExtPsePortTable`, using the same
-compound group/port index:
+### Cisco PoE - Port Faults (1 minute)
 
-- `cpeExtPsePortDeviceDetected`
-- `cpeExtPsePortPwrAllocated`
-- `cpeExtPsePortPwrAvailable`
-- `cpeExtPsePortPwrConsumption`
-- `cpeExtPsePortMaxPwrDrawn`
-- `cpeExtPsePortEntPhyIndex`
+Power over Ethernet (PoE) faults on each port, as counts since the previous poll and as rates: powered devices lost (MPS absent), invalid signatures, power denied, overloads and short circuits. Rows are identified by PSE group and port. An MPS-absent count can mean the device was unplugged.
 
-The four power fields are milliwatts; divide by 1,000 to display watts.
-Allocated/available power is not necessarily actual consumption. Maximum
-draw is the peak since the powered device was powered on, not the peak for
-the current chart interval. These fields are absolute readings, not counters
-to differentiate into rates.
+From `POWER-ETHERNET-MIB::pethPsePortTable`.
 
-## Port identity and stack handling
+- `MpsAbsent`: Times the powered device's maintain-power signature was lost since the previous poll (`delta(pethPsePortMPSAbsentCounter)`).
+- `MpsAbsentPerSec`: Times the powered device's maintain-power signature was lost, per second (`rate(pethPsePortMPSAbsentCounter)`).
+- `InvalidSignatures`: Invalid powered-device signatures detected since the previous poll (`delta(pethPsePortInvalidSignatureCounter)`).
+- `InvalidSignaturesPerSec`: Invalid powered-device signatures detected, per second (`rate(pethPsePortInvalidSignatureCounter)`).
+- `PowerDenied`: Times power was denied since the previous poll (`delta(pethPsePortPowerDeniedCounter)`).
+- `PowerDeniedPerSec`: Times power was denied, per second (`rate(pethPsePortPowerDeniedCounter)`).
+- `Overloads`: Overload conditions since the previous poll (`delta(pethPsePortOverLoadCounter)`).
+- `OverloadsPerSec`: Overload conditions, per second (`rate(pethPsePortOverLoadCounter)`).
+- `Shorts`: Short-circuit conditions since the previous poll (`delta(pethPsePortShortCounter)`).
+- `ShortsPerSec`: Short-circuit conditions, per second (`rate(pethPsePortShortCounter)`).
 
-Preserve the complete `group.port` index. Port 1 in group 1 and port 1 in
-group 2 are different ports. PSE indices are not `IF-MIB::ifIndex` values.
+### Cisco PoE - Port Power (1 minute)
 
-The Cisco extension provides `cpeExtPsePortEntPhyIndex`, which can be matched
-to `ENTITY-MIB::entPhysicalName` for a physical interface label. Validate the
-mapping rather than assuming an arithmetic conversion. On the test switch,
-the first port in each group mapped to physical indices 1062 and 2062.
-Physical index zero means no mapping is supplied.
+Power over Ethernet (PoE) power on each port as Cisco reports it: whether a device is detected, power allocated and available, actual consumption, and the most drawn since the device was powered on, with the port's physical index. Rows are identified by PSE group and port.
 
-The bundle retains the physical index but does not collect the ENTITY-MIB
-inventory or perform an automatic join to interface names. Stack membership
-changes can alter indices and invalidate previously established labels.
+From `CISCO-POWER-ETHERNET-EXT-MIB::cpeExtPsePortTable`.
 
-## Suggested panels
+- `DeviceDetected`: Whether a powered device is detected (TruthValue: 1 true, 2 false) (`cpeExtPsePortDeviceDetected`).
+- `AllocatedMw`: Power allocated to the device, milliwatts (`cpeExtPsePortPwrAllocated`).
+- `AvailableMw`: Power available to the device, milliwatts (`cpeExtPsePortPwrAvailable`).
+- `ConsumptionMw`: Actual power consumption, milliwatts (`cpeExtPsePortPwrConsumption`).
+- `ConsumptionW`: Actual power consumption, watts (`$ConsumptionMw / 1000.0`).
+- `MaxDrawnMw`: Most power drawn since the device was powered on, milliwatts (`cpeExtPsePortMaxPwrDrawn`).
+- `EntPhysicalIndex`: ENTITY-MIB physical index of the port; 0 for none (`cpeExtPsePortEntPhyIndex`).
 
-The bundle supplies collection only. Useful customer-created panels include:
+`delta(x)` is the change in counter `x` between the last two polls; `rate(x)` is that change divided by the monitor's polling period in seconds (TES's `$pollingSecs`), a per-second rate.
 
-- Used and remaining PoE budget per PSE group, converted to watts.
-- Actual per-port consumption, sorted highest first, alongside allocation.
-- Port delivery state and changes in denied-power, overload, and short counters.
+## Expected variations
 
-Derived percentages, unit conversions, cross-monitor joins, and fault-counter
-deltas are not embedded in this example. Sum by compatible PSE group only;
-do not assume these tables fully describe StackPower sharing or redundancy.
+A table monitor returns no rows when the device lacks the feature or hardware it covers. An empty table does not necessarily indicate a collection failure: first confirm that the feature is present and configured on the device.
 
-## Validation and limitations
+- Assign the PoE collection beside the Cisco IOS Switch collections, which cover the switch's role and health.
+- The collection is for PoE-capable switches; a switch without PoE returns nothing for its monitors.
+- An enabled port with nothing attached reports searching, not deliveringPower; a port that is not delivering power is not necessarily at fault. The power class is meaningful only while the port delivers power.
+- Rows are identified by PSE group and port: port 1 in group 1 and port 1 in group 2 are different ports, and the indexes are not ifIndex values. Cisco PoE - Port Power gives each port's ENTITY-MIB physical index (0 for none), which can be matched to entPhysicalName; stack membership changes can change the indexes.
+- Used budget and measured consumption differ: Cisco PoE - PSE Budget and Headroom reports the budget Cisco allocates, Cisco PoE - PSE Capacity and Consumption what the PSE measures.
+- Without a current CISCO-POWER-ETHERNET-EXT-MIB imported, Cisco PoE - PSE Budget and Headroom collects nothing for its used and remaining budget.
+- The published module's README says it was validated over SNMP only, and that ThirdEye import and scheduled collection have not yet been validated. This collection also differs from it: Port State and Faults is split into Port State and Port Faults, PSE Budget and Headroom is labelled by the PSE description, and percentage and watts columns are added.
 
-Live read-only SNMP validation returned two PSE groups, 96 ports, positive
-draw on two ports, and physical port mappings. This establishes that the
-source OIDs are available on the tested release, not that the bundle has
-completed ThirdEye import or end-to-end panel validation. No overload,
-short-circuit, or denied-power event was deliberately induced.
+## Validation
 
-After import, compare capacity, allocation, consumption, and port state with
-`show power inline` on the switch. Check every stack member, confirm the port
-labels, and verify unit conversions. Establish a baseline before choosing
-thresholds; an empty port is not inherently an incident.
+To run the **SNMP System Info** tool, open **Inventory**, select the target device, open **Tools**, and select **SNMP System Info**. A successful test returns basic system information, including the system description and uptime, rather than an SNMP timeout or authentication error.
 
-If general SNMP access works but the PoE tables are empty, check hardware
-capability, the SNMP view, and support in the installed IOS XE release. If
-the standard tables work but Cisco-specific metrics are absent, review the
-extension MIB and platform support rather than treating missing data as zero.
+After installation:
 
-For platform behavior, see Cisco's
-[Catalyst 3850 PoE configuration guide](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/37e/consolidated_guide/b_37e_consolidated_3850_cg/b_37e_consolidated_3850_cg_chapter_01010.html).
+1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
+2. Confirm that the one-minute monitors have current samples.
+3. Verify that each applicable table monitor returns the expected rows.
+4. Compare values with the device's own interface or CLI before creating alert thresholds.
+
+## Limitations
+
+- The set performs collection only; it does not install alert policies, notification destinations, or incident workflows.
+- Counts are changes between polls and rates are per second; alert on those rather than on raw lifetime counters.
+- The set contains no SNMP usernames, secrets, device addresses or other environment-specific values.
+
+## Troubleshooting
+
+If no data is collected:
+
+1. Run **Inventory > Tools > SNMP System Info** against the device.
+2. Confirm network reachability from ThirdEye to UDP port 161 on the device.
+3. Verify the device's SNMP configuration and the credential assigned in ThirdEye.
+4. Confirm that the SNMP view permits both `1.3.6.1.2.1.105` and `1.3.6.1.4.1.9.9.402`.
+5. If general SNMP works but the PoE tables are empty, check the switch's PoE hardware and its IOS XE release's support for the MIBs; if the standard tables work but the Cisco ones do not, check the extension MIB's support.
+6. Compare capacity, allocation, consumption and port state with `show power inline` on the switch, on every stack member.
+7. Confirm that the MIB modules listed under Requirements are present in ThirdEye.
+8. Wait for the applicable collection interval after making a correction.
+
+If scalar metrics work but a table monitor is empty, confirm that the corresponding feature is configured before treating the result as an error.

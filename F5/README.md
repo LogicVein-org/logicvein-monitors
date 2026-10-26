@@ -1,206 +1,250 @@
-# F5 BIG-IP Operational Collection
+# F5 BIG-IP Operational and Health and Performance Collections
 
-Last updated: 2026-08-28
+Last updated: 2026-10-24
 
 Tested against: F5 BIG-IP Virtual Edition 21.1.0.1
 
-This example monitor set provides baseline operational visibility for F5
-BIG-IP appliances. It collects appliance resource usage, high-availability and
-configuration-sync state, traffic-group ownership, and the status of virtual
-servers, pools, and pool members.
+These monitor sets are for: F5 BIG-IP appliances and virtual editions running Local Traffic Manager.
 
-The collection is intended as a starting point. It does not include alert
-policies or environment-specific thresholds.
+The folder holds two sets; assign both to the same devices:
+
+- **F5 BIG-IP - Operational Collection** (8 monitors) covers what the device does (its role's state, load and services).
+- **F5 BIG-IP - Health and Performance Collection** (4 monitors) covers the device itself (CPU, memory, storage and hardware).
+
+The collections are a starting point. They define no alert policies or thresholds.
+
+Interface traffic and errors are not included: assign **Standard Network Interfaces - Health and Performance Collection** to the same devices for those.
 
 ## Requirements
 
-Before importing the monitor set, confirm that:
+Before importing the monitor sets, confirm that:
 
-- The BIG-IP appliance has been added to the ThirdEye inventory.
-- ThirdEye can reach the appliance's SNMP agent, normally over UDP port 161.
-- The BIG-IP SNMP allowed-hosts configuration includes the ThirdEye server or
-  its monitoring subnet.
-- A working SNMP credential has been assigned to the device in ThirdEye.
-  SNMPv3 with authentication and privacy is recommended.
-- The required F5 MIBs have been imported into ThirdEye.
+- The device has been added to the ThirdEye inventory.
+- ThirdEye can reach the device's SNMP agent, normally over UDP port 161.
+- A working SNMP credential has been assigned to the device in ThirdEye. SNMPv3 with authentication and privacy is recommended.
+- The BIG-IP SNMP allowed-hosts configuration includes the ThirdEye server or its monitoring subnet.
+- The MIB modules listed below are loaded in ThirdEye.
 
-This example was developed with the F5 MIB package version `21.0.0`. The F5
-MIB files are not included with this example and must be obtained from F5.
-Other BIG-IP and MIB versions may also work, but should be validated before the
-monitor set is used in production.
+### MIB modules
+
+The collections use these modules:
+
+- `F5-BIGIP-LOCAL-MIB`
+- `F5-BIGIP-SYSTEM-MIB`
+
+ThirdEye's built-in MIB store already includes all of these modules, so no MIB import is needed. The MIB files are not included with these collections; to install or update a module, obtain the files as described below and import them with their dependencies.
 
 ### Obtaining the F5 MIBs
 
-On a TMOS BIG-IP system, download the enterprise MIB archive directly from the
-Configuration utility:
+On a TMOS BIG-IP system, download the enterprise MIB archive directly from the Configuration utility:
 
 1. Open **About**.
 2. Select **Downloads**.
 3. Select **Download F5 MIBs (`mibs_f5.tar.gz`)**.
 
-The MIB files are also available on the appliance in
-`/usr/share/snmp/mibs`.
+The MIB files are also available on the appliance in `/usr/share/snmp/mibs`.
 
-On an rSeries or other F5OS-based system, open **System Settings > File
-Utilities**, select `mibs` as the base directory, select the MIB archive, and
-download it.
-
-For additional information, see F5's documentation for
-[downloading enterprise and NET-SNMP MIBs](https://techdocs.f5.com/en-us/bigip-16-0-0/external-monitoring-of-big-ip-systems-implementations/monitoring-big-ip-system-traffic-with-snmp.html).
+For additional information, see F5's documentation for [downloading enterprise and NET-SNMP MIBs](https://techdocs.f5.com/en-us/bigip-16-0-0/external-monitoring-of-big-ip-systems-implementations/monitoring-big-ip-system-traffic-with-snmp.html).
 
 ## Installation
 
-1. Import the required F5 MIBs into ThirdEye.
-2. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye
-   can query each target appliance.
-3. Go to **Monitors > Sets** and import the monitor-set file supplied with this
-   example.
-4. Assign **F5 BIG-IP - Operational Collection** to the appropriate BIG-IP
-   devices.
-5. Wait at least one collection interval, then confirm that current data is
-   present for the applicable monitors.
+1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
+2. Go to **Monitors > Sets** and import `F5 BIG-IP - Operational Collection.3em` and `F5 BIG-IP - Health and Performance Collection.3em`.
+3. Assign **F5 BIG-IP - Operational Collection** and **F5 BIG-IP - Health and Performance Collection** to the appropriate devices.
+4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
-Automatic assignment to newly discovered devices is disabled in the example.
-Review the set before enabling automatic assignment in your environment.
+Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
+
+These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.1.4.1.3375.*`.
 
 ## Included monitors
 
-All six monitors use SNMP and have a one-minute collection interval.
+**F5 BIG-IP - Operational Collection** contains 8 SNMP monitors and **F5 BIG-IP - Health and Performance Collection** contains 4 SNMP monitors. Metrics carry friendly names; each lists the MIB object it reads or the formula it computes.
 
-### F5 BIG-IP - Appliance Baseline — 1 minute
+### F5 BIG-IP - Operational Collection
 
-Collects general appliance resource and connection statistics:
+#### F5 BIG-IP - Traffic (1 minute)
 
-- `sysGlobalHostCpuUsageRatio1m`
-- `sysGlobalTmmStatTmUsageRatio1m`
-- `sysGlobalHostOtherMemTotalKb`
-- `sysGlobalHostOtherMemUsedKb`
-- `sysGlobalTmmStatMemoryTotalKb`
-- `sysGlobalTmmStatMemoryUsedKb`
-- `sysGlobalHostSwapTotalKb`
-- `sysGlobalHostSwapUsedKb`
-- `sysGlobalTmmStatClientCurConns`
-- `sysGlobalTmmStatServerCurConns`
-- `sysGlobalTmmStatDroppedPackets`
-- `sysGlobalTmmStatConnectionMemoryErrors`
+System-wide client and server connections, from the global and the TMM statistics, new connections and client-side throughput.
 
-The set collects the raw used and total memory values. It does not define
-derived memory or swap percentages.
+From `F5-BIGIP-SYSTEM-MIB` scalars.
 
-### F5 BIG-IP - HA and Config Sync — 1 minute
+- `ClientConnections`: Current client-side connections (`sysStatClientCurConns`).
+- `ServerConnections`: Current server-side connections (`sysStatServerCurConns`).
+- `TmmClientConnections`: Current client-side connections, from the TMM statistics (sysGlobalTmmStat) rather than the global ones (`sysGlobalTmmStatClientCurConns`).
+- `TmmServerConnections`: Current server-side connections, from the TMM statistics (`sysGlobalTmmStatServerCurConns`).
+- `NewClientConnectionsPerSec`: Client-side connections opened, per second (`rate(sysStatClientTotConns)`).
+- `NewClientConnections`: Client-side connections opened since the previous poll (`delta(sysStatClientTotConns)`).
+- `ClientBitsInPerSec`: Bytes received from clients, as bits per second (`rate(sysStatClientBytesIn) * 8`).
+- `ClientBitsOutPerSec`: Bytes sent to clients, as bits per second (`rate(sysStatClientBytesOut) * 8`).
+- `ClientBytesIn`: Bytes received from clients since the previous poll (`delta(sysStatClientBytesIn)`).
+- `ClientBytesInPerSec`: Bytes received from clients, per second (`rate(sysStatClientBytesIn)`).
+- `ClientBytesOut`: Bytes sent to clients since the previous poll (`delta(sysStatClientBytesOut)`).
+- `ClientBytesOutPerSec`: Bytes sent to clients, per second (`rate(sysStatClientBytesOut)`).
 
-Collects device-group synchronization and failover state:
+#### F5 BIG-IP - TMM Errors (1 minute)
 
-- `sysCmSyncStatusId`
-- `sysCmSyncStatusStatus`
-- `sysCmSyncStatusSummary`
-- `sysCmFailoverStatusId`
-- `sysCmFailoverStatusStatus`
-- `sysCmFailoverStatusSummary`
+Packets the traffic management microkernel (TMM) dropped, and connections it could not create for lack of memory, as counts since the previous poll and as rates.
 
-### F5 BIG-IP - Traffic Groups — 1 minute
+From `F5-BIGIP-SYSTEM-MIB` scalars.
 
-Collects traffic-group ownership and failover status from
-`F5-BIGIP-SYSTEM-MIB::sysCmTrafficGroupStatusTable`, including:
+- `DroppedPackets`: Packets dropped since the previous poll (`delta(sysGlobalTmmStatDroppedPackets)`).
+- `DroppedPacketsPerSec`: Packets dropped, per second (`rate(sysGlobalTmmStatDroppedPackets)`).
+- `ConnectionMemoryErrors`: Connections not created for lack of memory since the previous poll (`delta(sysGlobalTmmStatConnectionMemoryErrors)`).
+- `ConnectionMemoryErrorsPerSec`: Connections not created for lack of memory, per second (`rate(sysGlobalTmmStatConnectionMemoryErrors)`).
 
-- `sysCmTrafficGroupStatusTrafficGroup`
-- `sysCmTrafficGroupStatusDeviceName`
-- `sysCmTrafficGroupStatusFailoverStatus`
+#### F5 BIG-IP - Failover and Sync (1 minute)
 
-### F5 BIG-IP - Virtual Server Status — 1 minute
+This unit's failover state and the device group's config sync state, as codes and as the BIG-IP's own status and summary text.
 
-Collects virtual-server availability and enabled state from
-`F5-BIGIP-LOCAL-MIB::ltmVirtualServTable`, including:
+From `F5-BIGIP-SYSTEM-MIB` scalars.
 
-- `ltmVirtualServName`
-- `ltmVirtualServAvailabilityState`
-- `ltmVirtualServEnabledState`
-- `ltmVirtualServStatusReason`
+- `FailoverStatus`: Failover status (unknown, offline, forcedOffline, standby, active) (`sysCmFailoverStatusId`).
+- `SyncStatus`: Config sync status (unknown, syncing, needManualSync, inSync, syncFailed, syncDisconnected, standalone, awaitingInitialSync, incompatibleVersion, partialSync) (`sysCmSyncStatusId`).
+- `FailoverDetail`: Failover status on the system, as text (`sysCmFailoverStatusStatus`).
+- `FailoverSummary`: Summary of the failover status, as text (`sysCmFailoverStatusSummary`).
+- `SyncDetail`: Config sync status on the system, as text (`sysCmSyncStatusStatus`).
+- `SyncSummary`: Summary of the config sync status, as text (`sysCmSyncStatusSummary`).
 
-### F5 BIG-IP - Pool Status — 1 minute
+#### F5 BIG-IP - Traffic Group Status (1 minute)
 
-Collects pool availability and enabled state from
-`F5-BIGIP-LOCAL-MIB::ltmPoolStatusTable`, including:
+Which device is active, standby or offline in each traffic group, the unit of failover in a device group. Rows are per traffic group and device, so an HA pair shows each traffic group once per device; the Device column tells them apart.
 
-- `ltmPoolStatusName`
-- `ltmPoolStatusAvailState`
-- `ltmPoolStatusEnabledState`
-- `ltmPoolStatusDetailReason`
+From `F5-BIGIP-SYSTEM-MIB::sysCmTrafficGroupStatusTable`, one row per `sysCmTrafficGroupStatusTrafficGroup`.
 
-### F5 BIG-IP - Pool Member Status — 1 minute
+- `Device`: The device this row describes (`sysCmTrafficGroupStatusDeviceName`).
+- `FailoverStatus`: The device's failover status in the traffic group (unknown, offline, forcedOffline, standby, active) (`sysCmTrafficGroupStatusFailoverStatus`).
 
-Collects pool-member identity, availability, and enabled state from
-`F5-BIGIP-LOCAL-MIB::ltmPoolMbrStatusTable`, including:
+#### F5 BIG-IP - Virtual Servers (1 minute)
 
-- `ltmPoolMbrStatusPoolName`
-- `ltmPoolMbrStatusNodeName`
-- `ltmPoolMbrStatusAddrType`
-- `ltmPoolMbrStatusPort`
-- `ltmPoolMbrStatusAvailState`
-- `ltmPoolMbrStatusEnabledState`
-- `ltmPoolMbrStatusDetailReason`
+Availability and enabled state of each virtual server, with the reason the BIG-IP gives for its status.
 
-BIG-IP administrative partitions, such as `/Common`, are preserved in the
-fully qualified LTM object names returned by the table monitors.
+From `F5-BIGIP-LOCAL-MIB::ltmVsStatusTable`, one row per `ltmVsStatusName`.
+
+- `Availability`: Availability colour (none, green, yellow, red, blue, gray): green is available, red is not (`ltmVsStatusAvailState`).
+- `EnabledState`: Enabled state set by the administrator (none, enabled, disabled, disabledbyparent) (`ltmVsStatusEnabledState`).
+- `StatusReason`: Detail description of the virtual server's status (`ltmVsStatusDetailReason`).
+
+#### F5 BIG-IP - Virtual Server Traffic (1 minute)
+
+Client connections and throughput per virtual server.
+
+From `F5-BIGIP-LOCAL-MIB::ltmVirtualServStatTable`, one row per `ltmVirtualServStatName`.
+
+- `ClientConnections`: Current client-side connections (`ltmVirtualServStatClientCurConns`).
+- `NewConnectionsPerSec`: Client-side connections opened, per second (`rate(ltmVirtualServStatClientTotConns)`).
+- `NewConnections`: Client-side connections opened since the previous poll (`delta(ltmVirtualServStatClientTotConns)`).
+- `BitsInPerSec`: Bytes received from clients, as bits per second (`rate(ltmVirtualServStatClientBytesIn) * 8`).
+- `BitsOutPerSec`: Bytes sent to clients, as bits per second (`rate(ltmVirtualServStatClientBytesOut) * 8`).
+- `BytesIn`: Bytes received from clients since the previous poll (`delta(ltmVirtualServStatClientBytesIn)`).
+- `BytesInPerSec`: Bytes received from clients, per second (`rate(ltmVirtualServStatClientBytesIn)`).
+- `BytesOut`: Bytes sent to clients since the previous poll (`delta(ltmVirtualServStatClientBytesOut)`).
+- `BytesOutPerSec`: Bytes sent to clients, per second (`rate(ltmVirtualServStatClientBytesOut)`).
+
+#### F5 BIG-IP - Pools (1 minute)
+
+Availability and enabled state of each pool, with the reason the BIG-IP gives for its status.
+
+From `F5-BIGIP-LOCAL-MIB::ltmPoolStatusTable`, one row per `ltmPoolStatusName`.
+
+- `Availability`: Availability colour (none, green, yellow, red, blue, grey): green is available, red is not (`ltmPoolStatusAvailState`).
+- `EnabledState`: Enabled state set by the administrator (none, enabled, disabled, disabledbyparent) (`ltmPoolStatusEnabledState`).
+- `StatusReason`: Detail description of the pool's status (`ltmPoolStatusDetailReason`).
+
+#### F5 BIG-IP - Pool Members (1 minute)
+
+Availability and enabled state of each pool member, labelled by its pool, with the member's node name, address type and port, and the reason the BIG-IP gives for its status.
+
+From `F5-BIGIP-LOCAL-MIB::ltmPoolMbrStatusTable`, one row per `ltmPoolMbrStatusPoolName`.
+
+- `Node`: The member's node name (`ltmPoolMbrStatusNodeName`).
+- `AddressType`: Type of the member's address (unknown, ipv4, ipv6, ipv4z, ipv6z, dns) (`ltmPoolMbrStatusAddrType`).
+- `Port`: The member's service port (`ltmPoolMbrStatusPort`).
+- `Availability`: Availability colour (none, green, yellow, red, blue, gray): green is available, red is not (`ltmPoolMbrStatusAvailState`).
+- `EnabledState`: Enabled state set by the administrator (`ltmPoolMbrStatusEnabledState`).
+- `StatusReason`: Detail description of the pool member's status (`ltmPoolMbrStatusDetailReason`).
+
+### F5 BIG-IP - Health and Performance Collection
+
+#### F5 BIG-IP - CPU and Memory (1 minute)
+
+Host and traffic management (TMM) CPU usage over the last 1 and 5 minutes, and memory use split into traffic management (TMM) memory and the rest (other) memory, as F5 reports it, and swap use.
+
+From `F5-BIGIP-SYSTEM-MIB` scalars.
+Covers the TES built-in template *F5 Big-IP - Memory Utilization*: it polls every object that template polls, under its own names.
+
+- `Cpu1Min`: Host CPU usage ratio over the last minute: busy (user, niced, system) over total time, as the MIB defines it (`sysGlobalHostCpuUsageRatio1m`).
+- `Cpu5Min`: Host CPU usage ratio over the last 5 minutes, same definition (`sysGlobalHostCpuUsageRatio5m`).
+- `TmmCpu1Min`: Traffic management (TMM) CPU usage ratio over the last minute, as the MIB defines it (`sysGlobalTmmStatTmUsageRatio1m`).
+- `TmmCpu5Min`: TMM CPU usage ratio over the last 5 minutes, same definition (`sysGlobalTmmStatTmUsageRatio5m`).
+- `OtherMemoryUsedPct`: Memory in use outside TMM as a percentage of the memory outside TMM (`$sysGlobalHostOtherMemoryUsed * 100 / $sysGlobalHostOtherMemoryTotal`).
+- `TmmMemoryUsedPct`: TMM memory in use as a percentage of the memory available to TMM (`$sysGlobalTmmStatMemoryUsed * 100 / $sysGlobalTmmStatMemoryTotal`).
+- `TotalMemoryUsedPct`: TMM and other memory used, as a percentage of both totals (`($sysGlobalTmmStatMemoryUsed + $sysGlobalHostOtherMemoryUsed) * 100 / ($sysGlobalTmmStatMemoryTotal + $sysGlobalHostOtherMemoryTotal)`).
+- `SwapTotalKB`: Total swap, KB (`sysGlobalHostSwapTotalKb`).
+- `SwapUsedKB`: Swap in use, KB (`sysGlobalHostSwapUsedKb`).
+- `SwapUsedPct`: Swap in use as a percentage of the total (`$SwapUsedKB * 100.0 / $SwapTotalKB`).
+
+#### F5 BIG-IP - Temperature (1 minute)
+
+Temperature per chassis sensor, on platforms that report sensor data.
+
+From `F5-BIGIP-SYSTEM-MIB::sysChassisTempTable`.
+
+- `TemperatureC`: Chassis temperature, degrees Celsius (`sysChassisTempTemperature`).
+
+#### F5 BIG-IP - Fans (1 minute)
+
+Status and speed of each chassis fan, on platforms that report sensor data.
+
+From `F5-BIGIP-SYSTEM-MIB::sysChassisFanTable`.
+
+- `Status`: Fan status (bad, good, notpresent) (`sysChassisFanStatus`).
+- `Speed`: Fan speed as reported (0 when unavailable while the fan is good) (`sysChassisFanSpeed`).
+
+#### F5 BIG-IP - Power Supplies (1 minute)
+
+Status of each power supply, on platforms that report sensor data.
+
+From `F5-BIGIP-SYSTEM-MIB::sysChassisPowerSupplyTable`.
+
+- `Status`: Power supply status (bad, good, notpresent) (`sysChassisPowerSupplyStatus`).
+
+`delta(x)` is the change in counter `x` between the last two polls; `rate(x)` is that change divided by the monitor's polling period in seconds (TES's `$pollingSecs`), a per-second rate.
 
 ## Expected variations
 
-Some monitors return data only when the corresponding BIG-IP feature is
-configured:
+A table monitor returns no rows when the device lacks the feature or hardware it covers. An empty table does not necessarily indicate a collection failure: first confirm that the feature is present and configured on the device.
 
-- HA and configuration-sync metrics depend on the appliance's device-service
-  clustering configuration.
-- Traffic-group data depends on the configured traffic groups.
-- Virtual-server, pool, and pool-member tables are empty when those objects do
-  not exist on the appliance.
-
-An empty feature-specific table does not necessarily indicate a collection
-failure. First confirm whether that feature or object type is configured on the
-target appliance.
+- On a BIG-IP virtual edition, which has no chassis sensors, F5 BIG-IP - Temperature, F5 BIG-IP - Fans and F5 BIG-IP - Power Supplies show No Response rather than empty tables. That is expected there and does not mean the SNMP credential failed: the other monitors return data from the same device.
+- HA and config sync values depend on the device service clustering configuration, and traffic group rows on the configured traffic groups.
+- Virtual server, pool and pool member tables are empty when those objects do not exist. LTM object names keep their administrative partition, such as `/Common`.
 
 ## Validation
 
-To run the **SNMP System Info** tool, open **Inventory**, select the target
-BIG-IP appliance, open **Tools**, and select **SNMP System Info**. ThirdEye
-queries the device using its assigned SNMP credential. A successful test
-returns basic system information, including the system description and uptime,
-rather than an SNMP timeout or authentication error.
+To run the **SNMP System Info** tool, open **Inventory**, select the target device, open **Tools**, and select **SNMP System Info**. A successful test returns basic system information, including the system description and uptime, rather than an SNMP timeout or authentication error.
 
 After installation:
 
-1. Run **SNMP System Info** for every assigned appliance and confirm that it
-   succeeds.
-2. Confirm that the Appliance Baseline monitor has a current sample.
-3. Verify that each applicable table monitor returns the expected BIG-IP
-   objects.
-4. Check that HA, synchronization, availability, and enabled-state values match
-   the state shown by BIG-IP.
-5. Review normal operating values in your environment before creating alert
-   thresholds.
+1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
+2. Confirm that the one-minute monitors have current samples.
+3. Verify that each applicable table monitor returns the expected rows.
+4. Compare values with the device's own interface or CLI before creating alert thresholds.
 
 ## Limitations
 
-- The example performs collection only; it does not install alert policies,
-  notification destinations, or incident workflows.
-- Thresholds should be defined only after establishing a normal baseline for
-  the appliance model, software version, traffic profile, and HA design.
-- Availability and enumeration values are reported as supplied by the F5 MIBs.
-  Interpret them using the MIB definitions applicable to the BIG-IP version
-  being monitored.
-- The example does not contain SNMP usernames, authentication secrets, privacy
-  secrets, device addresses, or other environment-specific credentials.
+- The sets perform collection only; they do not install alert policies, notification destinations, or incident workflows.
+- Counts are changes between polls and rates are per second; alert on those rather than on raw lifetime counters.
+- The sets contain no SNMP usernames, secrets, device addresses or other environment-specific values.
 
 ## Troubleshooting
 
 If no data is collected:
 
 1. Run **Inventory > Tools > SNMP System Info** against the device.
-2. Confirm network reachability from ThirdEye to the appliance's SNMP agent.
-3. Check the BIG-IP SNMP allowed-hosts configuration.
-4. Verify the assigned SNMP version and credentials.
-5. Confirm that the required F5 MIBs are present in ThirdEye.
-6. Wait at least one collection interval after making a correction.
+2. Confirm network reachability from ThirdEye to UDP port 161 on the device.
+3. Verify the device's SNMP configuration and the credential assigned in ThirdEye.
+4. Check that the BIG-IP SNMP allowed-hosts configuration includes the ThirdEye server.
+5. Confirm that the MIB modules listed under Requirements are present in ThirdEye.
+6. Wait for the applicable collection interval after making a correction.
 
-If scalar appliance metrics work but a table monitor is empty, confirm that the
-corresponding BIG-IP feature and objects are configured before treating the
-result as an error.
+If scalar metrics work but a table monitor is empty, confirm that the corresponding feature is configured before treating the result as an error.
