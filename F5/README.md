@@ -1,6 +1,6 @@
 # F5 BIG-IP Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: F5 BIG-IP Virtual Edition 21.1.0.1
 
@@ -51,7 +51,7 @@ For additional information, see F5's documentation for [downloading enterprise a
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `F5 BIG-IP - Operational Collection.3em` and `F5 BIG-IP - Health and Performance Collection.3em`.
 3. Assign **F5 BIG-IP - Operational Collection** and **F5 BIG-IP - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -63,7 +63,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### F5 BIG-IP - Operational Collection
 
-#### F5 BIG-IP - Traffic (1 minute)
+#### F5 BIG-IP - Traffic (5 minutes)
 
 System-wide client and server connections, from the global and the TMM statistics, new connections and client-side throughput.
 
@@ -82,7 +82,7 @@ From `F5-BIGIP-SYSTEM-MIB` scalars.
 - `ClientBytesOut`: Bytes sent to clients since the previous poll (`delta(sysStatClientBytesOut)`).
 - `ClientBytesOutPerSec`: Bytes sent to clients, per second (`rate(sysStatClientBytesOut)`).
 
-#### F5 BIG-IP - TMM Errors (1 minute)
+#### F5 BIG-IP - TMM Errors (5 minutes)
 
 Packets the traffic management microkernel (TMM) dropped, and connections it could not create for lack of memory, as counts since the previous poll and as rates.
 
@@ -93,7 +93,7 @@ From `F5-BIGIP-SYSTEM-MIB` scalars.
 - `ConnectionMemoryErrors`: Connections not created for lack of memory since the previous poll (`delta(sysGlobalTmmStatConnectionMemoryErrors)`).
 - `ConnectionMemoryErrorsPerSec`: Connections not created for lack of memory, per second (`rate(sysGlobalTmmStatConnectionMemoryErrors)`).
 
-#### F5 BIG-IP - Failover and Sync (1 minute)
+#### F5 BIG-IP - Failover and Sync (5 minutes)
 
 This unit's failover state and the device group's config sync state, as codes and as the BIG-IP's own status and summary text.
 
@@ -106,7 +106,7 @@ From `F5-BIGIP-SYSTEM-MIB` scalars.
 - `SyncDetail`: Config sync status on the system, as text (`sysCmSyncStatusStatus`).
 - `SyncSummary`: Summary of the config sync status, as text (`sysCmSyncStatusSummary`).
 
-#### F5 BIG-IP - Traffic Group Status (1 minute)
+#### F5 BIG-IP - Traffic Group Status (5 minutes)
 
 Which device is active, standby or offline in each traffic group, the unit of failover in a device group. Rows are per traffic group and device, so an HA pair shows each traffic group once per device; the Device column tells them apart.
 
@@ -115,7 +115,7 @@ From `F5-BIGIP-SYSTEM-MIB::sysCmTrafficGroupStatusTable`, one row per `sysCmTraf
 - `Device`: The device this row describes (`sysCmTrafficGroupStatusDeviceName`).
 - `FailoverStatus`: The device's failover status in the traffic group (unknown, offline, forcedOffline, standby, active) (`sysCmTrafficGroupStatusFailoverStatus`).
 
-#### F5 BIG-IP - Virtual Servers (1 minute)
+#### F5 BIG-IP - Virtual Servers (5 minutes)
 
 Availability and enabled state of each virtual server, with the reason the BIG-IP gives for its status.
 
@@ -125,7 +125,7 @@ From `F5-BIGIP-LOCAL-MIB::ltmVsStatusTable`, one row per `ltmVsStatusName`.
 - `EnabledState`: Enabled state set by the administrator (none, enabled, disabled, disabledbyparent) (`ltmVsStatusEnabledState`).
 - `StatusReason`: Detail description of the virtual server's status (`ltmVsStatusDetailReason`).
 
-#### F5 BIG-IP - Virtual Server Traffic (1 minute)
+#### F5 BIG-IP - Virtual Server Traffic (5 minutes)
 
 Client connections and throughput per virtual server.
 
@@ -141,7 +141,7 @@ From `F5-BIGIP-LOCAL-MIB::ltmVirtualServStatTable`, one row per `ltmVirtualServS
 - `BytesOut`: Bytes sent to clients since the previous poll (`delta(ltmVirtualServStatClientBytesOut)`).
 - `BytesOutPerSec`: Bytes sent to clients, per second (`rate(ltmVirtualServStatClientBytesOut)`).
 
-#### F5 BIG-IP - Pools (1 minute)
+#### F5 BIG-IP - Pools (5 minutes)
 
 Availability and enabled state of each pool, with the reason the BIG-IP gives for its status.
 
@@ -151,7 +151,7 @@ From `F5-BIGIP-LOCAL-MIB::ltmPoolStatusTable`, one row per `ltmPoolStatusName`.
 - `EnabledState`: Enabled state set by the administrator (none, enabled, disabled, disabledbyparent) (`ltmPoolStatusEnabledState`).
 - `StatusReason`: Detail description of the pool's status (`ltmPoolStatusDetailReason`).
 
-#### F5 BIG-IP - Pool Members (1 minute)
+#### F5 BIG-IP - Pool Members (5 minutes)
 
 Availability and enabled state of each pool member, labelled by its pool, with the member's node name, address type and port, and the reason the BIG-IP gives for its status.
 
@@ -166,7 +166,7 @@ From `F5-BIGIP-LOCAL-MIB::ltmPoolMbrStatusTable`, one row per `ltmPoolMbrStatusP
 
 ### F5 BIG-IP - Health and Performance Collection
 
-#### F5 BIG-IP - CPU and Memory (1 minute)
+#### F5 BIG-IP - CPU and Memory (5 minutes)
 
 Host and traffic management (TMM) CPU usage over the last 1 and 5 minutes, and memory use split into traffic management (TMM) memory and the rest (other) memory, as F5 reports it, and swap use.
 
@@ -177,14 +177,14 @@ Covers the TES built-in template *F5 Big-IP - Memory Utilization*: it polls ever
 - `Cpu5Min`: Host CPU usage ratio over the last 5 minutes, same definition (`sysGlobalHostCpuUsageRatio5m`).
 - `TmmCpu1Min`: Traffic management (TMM) CPU usage ratio over the last minute, as the MIB defines it (`sysGlobalTmmStatTmUsageRatio1m`).
 - `TmmCpu5Min`: TMM CPU usage ratio over the last 5 minutes, same definition (`sysGlobalTmmStatTmUsageRatio5m`).
-- `OtherMemoryUsedPct`: Memory in use outside TMM as a percentage of the memory outside TMM (`$sysGlobalHostOtherMemoryUsed * 100 / $sysGlobalHostOtherMemoryTotal`).
-- `TmmMemoryUsedPct`: TMM memory in use as a percentage of the memory available to TMM (`$sysGlobalTmmStatMemoryUsed * 100 / $sysGlobalTmmStatMemoryTotal`).
-- `TotalMemoryUsedPct`: TMM and other memory used, as a percentage of both totals (`($sysGlobalTmmStatMemoryUsed + $sysGlobalHostOtherMemoryUsed) * 100 / ($sysGlobalTmmStatMemoryTotal + $sysGlobalHostOtherMemoryTotal)`).
+- `OtherMemoryUsedPct`: Memory in use outside TMM as a percentage of the memory outside TMM (`($sysGlobalHostOtherMemoryUsed / $sysGlobalHostOtherMemoryTotal) * 100`).
+- `TmmMemoryUsedPct`: TMM memory in use as a percentage of the memory available to TMM (`($sysGlobalTmmStatMemoryUsed / $sysGlobalTmmStatMemoryTotal) * 100`).
+- `TotalMemoryUsedPct`: TMM and other memory used, as a percentage of both totals (`(($sysGlobalTmmStatMemoryUsed + $sysGlobalHostOtherMemoryUsed) / ($sysGlobalTmmStatMemoryTotal + $sysGlobalHostOtherMemoryTotal)) * 100`).
 - `SwapTotalKB`: Total swap, KB (`sysGlobalHostSwapTotalKb`).
 - `SwapUsedKB`: Swap in use, KB (`sysGlobalHostSwapUsedKb`).
-- `SwapUsedPct`: Swap in use as a percentage of the total (`$SwapUsedKB * 100.0 / $SwapTotalKB`).
+- `SwapUsedPct`: Swap in use as a percentage of the total (`($SwapUsedKB / $SwapTotalKB) * 100.0`).
 
-#### F5 BIG-IP - Temperature (1 minute)
+#### F5 BIG-IP - Temperature (5 minutes)
 
 Temperature per chassis sensor, on platforms that report sensor data.
 
@@ -192,7 +192,7 @@ From `F5-BIGIP-SYSTEM-MIB::sysChassisTempTable`.
 
 - `TemperatureC`: Chassis temperature, degrees Celsius (`sysChassisTempTemperature`).
 
-#### F5 BIG-IP - Fans (1 minute)
+#### F5 BIG-IP - Fans (5 minutes)
 
 Status and speed of each chassis fan, on platforms that report sensor data.
 
@@ -201,7 +201,7 @@ From `F5-BIGIP-SYSTEM-MIB::sysChassisFanTable`.
 - `Status`: Fan status (bad, good, notpresent) (`sysChassisFanStatus`).
 - `Speed`: Fan speed as reported (0 when unavailable while the fan is good) (`sysChassisFanSpeed`).
 
-#### F5 BIG-IP - Power Supplies (1 minute)
+#### F5 BIG-IP - Power Supplies (5 minutes)
 
 Status of each power supply, on platforms that report sensor data.
 
@@ -226,7 +226,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

@@ -1,6 +1,6 @@
 # Juniper SRX Firewall Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -43,7 +43,7 @@ Download the MIB files for the device's software release from Juniper Networks' 
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Juniper SRX Firewall - Operational Collection.3em` and `Juniper SRX Firewall - Health and Performance Collection.3em`.
 3. Assign **Juniper SRX Firewall - Operational Collection** and **Juniper SRX Firewall - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -55,7 +55,7 @@ These host queries match the devices the sets are meant for: `sysDescr=*SRX*`, `
 
 ### Juniper SRX Firewall - Operational Collection
 
-#### Juniper - BGP Peers (1 minute)
+#### Juniper - BGP Peers (5 minutes)
 
 Session state of every BGP peer, with its remote AS. Rows are identified by the peer's routing instance and addresses (the table index); there is no name column.
 
@@ -64,28 +64,28 @@ From `BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerTable`.
 - `State`: BGP session state (idle, connect, active, opensent, openconfirm, established) (`jnxBgpM2PeerState`).
 - `RemoteAs`: The peer's autonomous system number (`jnxBgpM2PeerRemoteAs`).
 
-#### Juniper SRX - SPU Sessions (1 minute)
+#### Juniper SRX - SPU Sessions (5 minutes)
 
 Per services processing unit (SPU) on SRX firewalls: flow sessions against the SPU's maximum.
 
 From `JUNIPER-SRX5000-SPU-MONITORING-MIB::jnxJsSPUMonitoringObjectsTable`, one row per `jnxJsSPUMonitoringNodeDescr`.
 
 - `FlowSessions`: Current flow sessions on the SPU (`jnxJsSPUMonitoringCurrentFlowSession`).
-- `FlowSessionsPct`: Current flow sessions as a percentage of the SPU's maximum (`$FlowSessions * 100 / $jnxJsSPUMonitoringMaxFlowSession`).
+- `FlowSessionsPct`: Current flow sessions as a percentage of the SPU's maximum (`($FlowSessions / $jnxJsSPUMonitoringMaxFlowSession) * 100`).
 
-#### Juniper SRX - Sessions (1 minute)
+#### Juniper SRX - Sessions (5 minutes)
 
 Total sessions per SRX chassis or cluster node, against the maximum, and the session creation rate.
 
 From `JUNIPER-SRX5000-SPU-MONITORING-MIB::jnxSPUClusterObjectsTable`, one row per `jnxJsClusterMonitoringNodeDescr`.
 
 - `Sessions`: Current total sessions on the node (`jnxJsNodeCurrentTotalSession`).
-- `SessionsPct`: Current sessions as a percentage of the node's maximum (`$Sessions * 100 / $jnxJsNodeMaxTotalSession`).
+- `SessionsPct`: Current sessions as a percentage of the node's maximum (`($Sessions / $jnxJsNodeMaxTotalSession) * 100`).
 - `NewSessionsPerSec`: Sessions created per second, as the device reports it (`jnxJsNodeSessionCreationPerSecond`).
 
 ### Juniper SRX Firewall - Health and Performance Collection
 
-#### Juniper - Component Health (1 minute)
+#### Juniper - Component Health (5 minutes)
 
 Per chassis component (routing engines, FPCs, PICs, fans, power supplies): state, temperature, CPU and memory use. Values the component does not have read 0.
 
@@ -99,7 +99,7 @@ Covers the TES built-in templates *Juniper Junos - CPU Utilization*, *Juniper Ju
 - `BufferPct`: Buffer pool utilization, percent (`jnxOperatingBuffer`).
 - `HeapPct`: Heap utilization, percent (`jnxOperatingHeap`).
 
-#### Juniper SRX - SPU Resources (1 minute)
+#### Juniper SRX - SPU Resources (5 minutes)
 
 Per services processing unit (SPU): CPU and memory use.
 
@@ -121,7 +121,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

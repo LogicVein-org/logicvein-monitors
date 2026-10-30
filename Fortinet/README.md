@@ -1,6 +1,6 @@
 # FortiGate Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: FortiGate-VM64-KVM running FortiOS 7.6.7
 
@@ -65,7 +65,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### FortiGate - Operational Collection
 
-#### FortiGate - HA Configuration (1 minute)
+#### FortiGate - HA Configuration (5 minutes)
 
 The HA mode, group name and automatic configuration synchronisation setting; cluster members are in FortiGate - HA Members.
 
@@ -75,7 +75,7 @@ From `FORTINET-FORTIGATE-MIB` scalars.
 - `HaGroup`: HA group name (`fgHaGroupName`).
 - `HaAutoSync`: Whether automatic HA configuration synchronisation is enabled (disabled, enabled) (`fgHaAutoSync`).
 
-#### FortiGate - Session Demand (1 minute)
+#### FortiGate - Session Demand (5 minutes)
 
 Active IPv4 and IPv6 sessions and the session setup rates the FortiGate averages over the past 1, 10, 30 and 60 minutes.
 
@@ -92,7 +92,7 @@ From `FORTINET-FORTIGATE-MIB` scalars.
 - `Session6SetupRate30Min`: Average IPv6 session setup rate over the past 30 minutes (`fgSysSes6Rate30`).
 - `Session6SetupRate60Min`: Average IPv6 session setup rate over the past 60 minutes (`fgSysSes6Rate60`).
 
-#### FortiGate - IPS (1 minute)
+#### FortiGate - IPS (5 minutes)
 
 Intrusions detected and blocked per virtual domain, as counts since the previous poll and as rates.
 
@@ -107,7 +107,7 @@ From `FORTINET-FORTIGATE-MIB::fgIpsStatsTable`, one row per `fgVdEntName`.
 - `AnomalyDetections`: Anomaly detections since the previous poll (`delta(fgIpsAnomalyDetections)`).
 - `AnomalyDetectionsPerSec`: Anomaly detections, per second (`rate(fgIpsAnomalyDetections)`).
 
-#### FortiGate - Session Failure Signals (1 minute)
+#### FortiGate - Session Failure Signals (5 minutes)
 
 Signs that the session table is under stress: ephemeral and expectation sessions (current values), and source NAT port clashes, sync and accept queue-full bursts and direct requests to the FortiGate itself. The MIB describes those last four as counters although it types them as gauges, so they are shown as the change since the previous poll and as rates.
 
@@ -115,7 +115,7 @@ From `FORTINET-FORTIGATE-MIB` scalars.
 
 - `EphemeralSessions`: Current ephemeral sessions (`fgSIAdvSesEphemeralCount`).
 - `EphemeralLimit`: Limit of ephemeral sessions (`fgSIAdvSesEphemeralLimit`).
-- `EphemeralUsedPct`: Ephemeral sessions as a percentage of the limit (`$EphemeralSessions * 100.0 / $EphemeralLimit`).
+- `EphemeralUsedPct`: Ephemeral sessions as a percentage of the limit (`($EphemeralSessions / $EphemeralLimit) * 100.0`).
 - `ExpectationSessions`: Current expectation sessions (`fgSIAdvSesExpCount`).
 - `SessionClashes`: New sessions that collided with existing ones since the previous poll (usually a shortage of ports or addresses in a source NAT pool) (`delta(fgSIAdvSesClashCount)`).
 - `SessionClashesPerSec`: New sessions that collided with existing ones, per second (`rate(fgSIAdvSesClashCount)`).
@@ -126,7 +126,7 @@ From `FORTINET-FORTIGATE-MIB` scalars.
 - `NoListener`: Direct requests from outside to the FortiGate's own stack since the previous poll (a sign of an attack on it) (`delta(fgSIAdvSesNoListenerCount)`).
 - `NoListenerPerSec`: Direct requests from outside to the FortiGate's own stack, per second (`rate(fgSIAdvSesNoListenerCount)`).
 
-#### FortiGate - HA Members (1 minute)
+#### FortiGate - HA Members (5 minutes)
 
 Each HA cluster member's configuration sync state, and which unit was master at the last sync attempt.
 
@@ -139,7 +139,7 @@ From `FORTINET-FORTIGATE-MIB::fgHaStatsTable`, one row per `fgHaStatsHostname`.
 - `LastSyncFailure`: When a synchronisation of the member last failed (DateAndTime) (`fgHaStatsSyncDatimeUnsucc`).
 - `GlobalChecksum`: The member's global configuration checksum; members whose checksums differ are out of sync (`fgHaStatsGlobalChecksum`).
 
-#### FortiGate - HA All Checksum (1 minute)
+#### FortiGate - HA All Checksum (5 minutes)
 
 Each HA member's fgHaStatsAllChecksum, the configuration checksum the published module polls beside the global one in FortiGate - HA Members.
 
@@ -148,7 +148,7 @@ Needs `FORTINET-CORE-MIB`, `FORTINET-FORTIGATE-MIB` imported: the objects this m
 
 - `AllChecksum`: Configuration checksum the MIB names fgHaStatsAllChecksum (`fgHaStatsAllChecksum`).
 
-#### FortiGate - IPsec Tunnels (1 minute)
+#### FortiGate - IPsec Tunnels (5 minutes)
 
 State and traffic of each IPsec tunnel, one row per phase 2 selector labelled by its name, as bit and byte rates and as bytes since the previous poll.
 
@@ -166,7 +166,7 @@ From `FORTINET-FORTIGATE-MIB::fgVpnTunTable`, one row per `fgVpnTunEntPhase2Name
 - `BytesOut`: Bytes sent on the tunnel since the previous poll (`delta(fgVpnTunEntOutOctets)`).
 - `BytesOutPerSec`: Bytes sent on the tunnel, per second (`rate(fgVpnTunEntOutOctets)`).
 
-#### FortiGate - SSL VPN (1 minute)
+#### FortiGate - SSL VPN (5 minutes)
 
 SSL VPN state and load per virtual domain: users, tunnels and web sessions, with the most of each seen at one time.
 
@@ -180,7 +180,7 @@ From `FORTINET-FORTIGATE-MIB::fgVpnSslStatsTable`, one row per `fgVdEntName`.
 - `WebSessions`: Active SSL VPN web sessions (`fgVpnSslStatsActiveWebSessions`).
 - `MaxWebSessions`: Most web sessions active at one time (`fgVpnSslStatsMaxWebSessions`).
 
-#### FortiGate - SD-WAN Health (1 minute)
+#### FortiGate - SD-WAN Health (5 minutes)
 
 SD-WAN performance SLA health checks per member link: state, and latency, jitter and packet loss averaged over the last 30 probes. FortiOS reports the three measurements as text holding a decimal number.
 
@@ -193,7 +193,7 @@ From `FORTINET-FORTIGATE-MIB::fgVWLHealthCheckLinkTable`, one row per `fgVWLHeal
 - `MemberSeq`: Sequence number of the SD-WAN member the health check measures (`fgVWLHealthCheckLinkSeq`).
 - `Vdom`: Virtual domain of the health check (`fgVWLHealthCheckLinkVdom`).
 
-#### FortiGate - SD-WAN Link Usage (1 minute)
+#### FortiGate - SD-WAN Link Usage (5 minutes)
 
 The interface, used bandwidth and MOS (voice quality) result of each SD-WAN health check member; MOS values are present only when the health check measures them.
 
@@ -206,7 +206,7 @@ Needs `FORTINET-CORE-MIB`, `FORTINET-FORTIGATE-MIB` imported: the objects this m
 - `MosCodec`: Codec the MOS result is calculated for (`fgVWLHealthCheckLinkMOSCodec`).
 - `Mos`: Mean opinion score, as text (`fgVWLHealthCheckLinkMOS`).
 
-#### FortiGate - Log Delivery (1 minute)
+#### FortiGate - Log Delivery (5 minutes)
 
 Delivery to each log device (FortiAnalyzer, syslog and so on): logs sent, relayed, failed and dropped, as counts since the previous poll and as rates, and logs cached for later sending.
 
@@ -254,7 +254,7 @@ From `FORTINET-FORTIGATE-MIB::fgFwPolStatsTable`, one row per `fgFwPolID`.
 - `Bytes`: Bytes the policy matched since the previous poll (`delta(fgFwPolByteCountHc)`).
 - `BytesPerSec`: Bytes the policy matched, per second (`rate(fgFwPolByteCountHc)`).
 
-#### FortiGate - Configuration Changes (1 minute)
+#### FortiGate - Configuration Changes (5 minutes)
 
 Configuration changes, from the configuration serial number, which increments when the configuration changes (as the published module's README describes it), with the configuration checksum and the time of the last change, which is relative to system uptime rather than a wall-clock time.
 
@@ -291,7 +291,7 @@ Needs `FORTINET-CORE-MIB`, `FORTINET-FORTIGATE-MIB` imported: the objects this m
 
 ### FortiGate - Health and Performance Collection
 
-#### FortiGate - System (1 minute)
+#### FortiGate - System (5 minutes)
 
 CPU, memory and disk use system-wide.
 
@@ -302,9 +302,9 @@ Covers the TES built-in templates *Fortigate - CPUUseRate*, *Fortigate - MemoryU
 - `MemoryPct`: Current memory utilization, percent (`fgSysMemUsage`).
 - `DiskUsedMB`: Hard disk usage, MB, if a disk is present (`fgSysDiskUsage`).
 - `DiskCapacityMB`: Hard disk capacity, MB, if a disk is present (`fgSysDiskCapacity`).
-- `DiskUsedPct`: Hard disk used as a percentage of its capacity (`$DiskUsedMB * 100.0 / $DiskCapacityMB`).
+- `DiskUsedPct`: Hard disk used as a percentage of its capacity (`($DiskUsedMB / $DiskCapacityMB) * 100.0`).
 
-#### FortiGate - CPU per Processor (1 minute)
+#### FortiGate - CPU per Processor (5 minutes)
 
 Usage of each processor, averaged over the last minute.
 
@@ -328,7 +328,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

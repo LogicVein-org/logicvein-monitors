@@ -1,6 +1,6 @@
 # Juniper ScreenOS Firewall Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -42,7 +42,7 @@ Download the MIB files for the device's software release from Juniper Networks' 
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Juniper ScreenOS Firewall - Operational Collection.3em` and `Juniper ScreenOS Firewall - Health and Performance Collection.3em`.
 3. Assign **Juniper ScreenOS Firewall - Operational Collection** and **Juniper ScreenOS Firewall - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -54,7 +54,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Juniper ScreenOS Firewall - Operational Collection
 
-#### ScreenOS - Sessions (1 minute)
+#### ScreenOS - Sessions (5 minutes)
 
 Session table use, and failed session allocations.
 
@@ -62,13 +62,13 @@ From `NETSCREEN-RESOURCE-MIB` scalars.
 
 - `Sessions`: Sessions allocated (`nsResSessAllocate`).
 - `SessionsMax`: Maximum sessions the system can hold (`nsResSessMaxium`).
-- `SessionsUsedPct`: Sessions allocated as a percentage of the maximum (`$Sessions * 100.0 / $SessionsMax`).
+- `SessionsUsedPct`: Sessions allocated as a percentage of the maximum (`($Sessions / $SessionsMax) * 100.0`).
 - `SessionFailures`: Failed session allocations since the previous poll (`delta(nsResSessFailed)`).
 - `SessionFailuresPerSec`: Failed session allocations, per second (`rate(nsResSessFailed)`).
 
 ### Juniper ScreenOS Firewall - Health and Performance Collection
 
-#### ScreenOS - CPU and Memory (1 minute)
+#### ScreenOS - CPU and Memory (5 minutes)
 
 CPU and memory use.
 
@@ -78,9 +78,9 @@ From `NETSCREEN-RESOURCE-MIB` scalars.
 - `Cpu5MinPct`: CPU utilization over the last 5 minutes, percent (`nsResCpuLast5Min`).
 - `MemoryAllocated`: Memory allocated (`nsResMemAllocate`).
 - `MemoryLeft`: Memory left (`nsResMemLeft`).
-- `MemoryUsedPct`: Memory allocated as a percentage of allocated plus left (`$MemoryAllocated * 100.0 / ($MemoryAllocated + $MemoryLeft)`).
+- `MemoryUsedPct`: Memory allocated as a percentage of allocated plus left (`($MemoryAllocated / ($MemoryAllocated + $MemoryLeft)) * 100.0`).
 
-#### ScreenOS - Power Supplies (1 minute)
+#### ScreenOS - Power Supplies (5 minutes)
 
 Status of each power supply module.
 
@@ -88,7 +88,7 @@ From `NETSCREEN-CHASSIS-MIB::nsPowerTable`, one row per `nsPowerDesc`.
 
 - `Status`: Power supply status (0 fail, 1 good, 2 not installed) (`nsPowerStatus`).
 
-#### ScreenOS - Fans (1 minute)
+#### ScreenOS - Fans (5 minutes)
 
 Status of each fan module.
 
@@ -96,7 +96,7 @@ From `NETSCREEN-CHASSIS-MIB::nsFanTable`, one row per `nsFanDesc`.
 
 - `Status`: Fan status (0 fail, 1 good) (`nsFanStatus`).
 
-#### ScreenOS - Temperature (1 minute)
+#### ScreenOS - Temperature (5 minutes)
 
 Temperature of each module sensor.
 
@@ -117,7 +117,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

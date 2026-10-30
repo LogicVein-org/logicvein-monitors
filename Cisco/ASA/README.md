@@ -1,6 +1,6 @@
 # Cisco ASA Firewall Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Cisco ASA 5505 running software 8.2
 
@@ -45,7 +45,7 @@ Download the MIB files from the [Cisco MIB download site](https://cfnng.cisco.co
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Cisco ASA Firewall - Operational Collection.3em` and `Cisco ASA Firewall - Health and Performance Collection.3em`.
 3. Assign **Cisco ASA Firewall - Operational Collection** and **Cisco ASA Firewall - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -57,7 +57,7 @@ These host queries match the devices the sets are meant for: `sysDescr=*Adaptive
 
 ### Cisco ASA Firewall - Operational Collection
 
-#### Cisco ASA - Connections (1 minute)
+#### Cisco ASA - Connections (5 minutes)
 
 Firewall connection counts: in use now and the highest since boot.
 
@@ -65,7 +65,7 @@ From `CISCO-FIREWALL-MIB::cfwConnectionStatTable`, one row per `cfwConnectionSta
 
 - `Connections`: The row's connection count (rows: currently in use, most used since boot) (`cfwConnectionStatValue`).
 
-#### Cisco ASA - Failover Status (1 minute)
+#### Cisco ASA - Failover Status (5 minutes)
 
 Which unit is active and whether failover is healthy, per hardware component (primary unit, secondary unit, failover LAN interface).
 
@@ -73,7 +73,7 @@ From `CISCO-FIREWALL-MIB::cfwHardwareStatusTable`, one row per `cfwHardwareInfor
 
 - `Status`: Component status (other, up, down, error, overTemp, busy, noMedia, backup, active, standby) (`cfwHardwareStatusValue`).
 
-#### Cisco ASA - Remote Access Sessions (1 minute)
+#### Cisco ASA - Remote Access Sessions (5 minutes)
 
 Remote-access VPN load: active sessions and users, and how fast sessions end.
 
@@ -85,7 +85,7 @@ Covers the TES built-in template *Cisco ASA - VPNSessions*: it polls every objec
 - `EndedSessionsPerSec`: Sessions that ended, per second (`rate(crasNumPrevSessions)`).
 - `EndedSessions`: Sessions that ended since the previous poll (`delta(crasNumPrevSessions)`).
 
-#### Cisco - IPsec Tunnels (1 minute)
+#### Cisco - IPsec Tunnels (5 minutes)
 
 Active IKE and IPsec tunnels and encrypted traffic, for routers and ASAs that terminate VPNs.
 
@@ -100,7 +100,7 @@ From `CISCO-IPSEC-FLOW-MONITOR-MIB` scalars.
 - `BytesOut`: Bytes encrypted by all IPsec tunnels since the previous poll (`delta(cipSecGlobalHcOutOctets)`).
 - `BytesOutPerSec`: Bytes encrypted by all IPsec tunnels, per second (`rate(cipSecGlobalHcOutOctets)`).
 
-#### Cisco - IPsec Errors (1 minute)
+#### Cisco - IPsec Errors (5 minutes)
 
 IPsec packets dropped in each direction and IKE tunnel setup failures, as rates and as counts since the previous poll.
 
@@ -115,7 +115,7 @@ From `CISCO-IPSEC-FLOW-MONITOR-MIB` scalars.
 
 ### Cisco ASA Firewall - Health and Performance Collection
 
-#### Cisco ASA - CPU Utilization (1 minute)
+#### Cisco ASA - CPU Utilization (5 minutes)
 
 CPU busy percentage over 5 seconds, 1 minute and 5 minutes, from the original CISCO-PROCESS-MIB objects that ASA software answers (an ASA 5505 on 8.2 returns nothing for the newer Rev objects).
 
@@ -126,7 +126,7 @@ Covers the TES built-in templates *Cisco CPU*, *Cisco Catalyst 9800 WLC - CPU Ut
 - `Busy1MinPct`: CPU busy over the last minute, percent (`cpmCPUTotal1min`).
 - `Busy5MinPct`: CPU busy over the last 5 minutes, percent (`cpmCPUTotal5min`).
 
-#### Cisco - Memory Pools (1 minute)
+#### Cisco - Memory Pools (5 minutes)
 
 Used and free memory per pool (processor, I/O) on classic IOS, and the largest free block, which shows fragmentation.
 
@@ -135,7 +135,7 @@ From `CISCO-MEMORY-POOL-MIB::ciscoMemoryPoolTable`, one row per `ciscoMemoryPool
 - `UsedBytes`: Bytes in use (`ciscoMemoryPoolUsed`).
 - `FreeBytes`: Bytes free (`ciscoMemoryPoolFree`).
 - `LargestFreeBytes`: Largest contiguous free block, bytes (`ciscoMemoryPoolLargestFree`).
-- `UsedPct`: Used as a percentage of used plus free (`$UsedBytes * 100 / ($UsedBytes + $FreeBytes)`).
+- `UsedPct`: Used as a percentage of used plus free (`($UsedBytes / ($UsedBytes + $FreeBytes)) * 100`).
 
 `delta(x)` is the change in counter `x` between the last two polls; `rate(x)` is that change divided by the monitor's polling period in seconds (TES's `$pollingSecs`), a per-second rate.
 
@@ -150,7 +150,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

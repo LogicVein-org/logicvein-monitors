@@ -1,6 +1,6 @@
 # Yamaha RT Router Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -43,7 +43,7 @@ Download the MIB files for the device's software release from Yamaha's network p
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Yamaha RT Router - Operational Collection.3em` and `Yamaha RT Router - Health and Performance Collection.3em`.
 3. Assign **Yamaha RT Router - Operational Collection** and **Yamaha RT Router - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -55,7 +55,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Yamaha RT Router - Operational Collection
 
-#### Yamaha RT - Tunnels (1 minute)
+#### Yamaha RT - Tunnels (5 minutes)
 
 Each tunnel interface: whether its link is up. Rows are identified by the router's interface index.
 
@@ -63,7 +63,7 @@ From `YAMAHA-RT-INTERFACES::yrIfTunnelTable`.
 
 - `Link`: Tunnel link (1 up, 2 down) (`yrIfTunnelLink`).
 
-#### Yamaha RT - IP Keepalive (1 minute)
+#### Yamaha RT - IP Keepalive (5 minutes)
 
 Each IP keepalive configuration: its type and status. Rows are identified by keepalive configuration.
 
@@ -72,7 +72,7 @@ From `YAMAHA-RT-IP::yrIpKeepaliveTable`.
 - `Type`: Keepalive type (1 icmp-echo) (`yrIpKeepaliveType`).
 - `Status`: Keepalive status (1 up, 2 down, 3 up-wait, 4 down-wait) (`yrIpKeepaliveStatus`).
 
-#### Yamaha RT - PP Interfaces (1 minute)
+#### Yamaha RT - PP Interfaces (5 minutes)
 
 Each PP interface: its admin and operational status, input and output utilization, and bytes and errors in and out, as rates and as counts since the previous poll, from the 64-bit counters. Rows are identified by interface index, labelled by description.
 
@@ -91,7 +91,7 @@ From `YAMAHA-RT-INTERFACES::yrIfPpTable`, one row per `yrIfPpDescr`.
 - `ErrorsOut`: Outbound errors since the previous poll (`delta(yrIfPpHCOutErrors)`).
 - `ErrorsOutPerSec`: Outbound errors, per second (`rate(yrIfPpHCOutErrors)`).
 
-#### Yamaha RT - WWAN (1 minute)
+#### Yamaha RT - WWAN (5 minutes)
 
 Each wireless WAN (WWAN) interface: its status, and packets sent and received, as rates and as counts since the previous poll. Rows are identified by WWAN interface.
 
@@ -103,7 +103,7 @@ From `YAMAHA-RT-INTERFACES::yrIfWwanTable`.
 - `PacketsReceived`: Packets received since the previous poll (`delta(yrIfWwanReceived)`).
 - `PacketsReceivedPerSec`: Packets received, per second (`rate(yrIfWwanReceived)`).
 
-#### Yamaha RT - Mobile Signal (1 minute)
+#### Yamaha RT - Mobile Signal (5 minutes)
 
 Each mobile (cellular) interface: the device's state and its latest signal strength, both as the router reports them as text. Rows are identified by mobile interface. The MIB's antenna level, dBm and signal quality objects are not-accessible (trap varbinds only), so they are not polled.
 
@@ -112,7 +112,7 @@ From `YAMAHA-RT-INTERFACES::yrIfMobileTable`.
 - `Status`: The device's state, as text (`yrIfMobileStatus`).
 - `SignalStrength`: The latest signal strength the router acquired, as text (`yrIfMobileSignalStrength`).
 
-#### Yamaha RT - WWAN Modules (1 minute)
+#### Yamaha RT - WWAN Modules (5 minutes)
 
 Each wireless WAN (WWAN) module: whether it is powered, whether its network is ready, the radio technology in use, and its antenna level. Rows are identified by the router's interface index.
 
@@ -125,7 +125,7 @@ From `YAMAHA-RT-INTERFACES::yrIfWwanModTable`.
 
 ### Yamaha RT Router - Health and Performance Collection
 
-#### Yamaha RT - CPU and Memory (1 minute)
+#### Yamaha RT - CPU and Memory (5 minutes)
 
 CPU utilization over 5 seconds, 1 minute and 5 minutes, and memory use.
 
@@ -138,7 +138,7 @@ Covers the TES built-in templates *YAMAHA - CPUUseRate (5min)*, *YAMAHA - Memory
 - `MemoryPct`: Main memory utilization, percent (`yrhMemoryUtil`).
 - `MemoryBytes`: Size of main memory, bytes (`yrhMemorySize`).
 
-#### Yamaha RT - Fans (1 minute)
+#### Yamaha RT - Fans (5 minutes)
 
 Status of each fan module.
 
@@ -147,7 +147,7 @@ Covers the TES built-in template *YAMAHA - FanStatus*: it polls every object tha
 
 - `Status`: Fan module status (1 good, 2 no good) (`yrhFanModuleStatus`).
 
-#### Yamaha RT - Power Supplies (1 minute)
+#### Yamaha RT - Power Supplies (5 minutes)
 
 Status of each power module.
 
@@ -156,7 +156,7 @@ Covers the TES built-in template *YAMAHA - Power status*: it polls every object 
 
 - `Status`: Power module status (1 up, 2 down, 3 not installed) (`yrhPowerModuleStatus`).
 
-#### Yamaha RT - Temperature (1 minute)
+#### Yamaha RT - Temperature (5 minutes)
 
 Temperature inside the chassis.
 
@@ -180,7 +180,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

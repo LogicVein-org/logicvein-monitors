@@ -1,6 +1,6 @@
 # ArubaOS-Switch Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: **ArubaOS-Switch - Operational Collection**: not yet validated against a device; **ArubaOS-Switch - Health and Performance Collection**: HP ProCurve 2626
 
@@ -48,7 +48,7 @@ Download the MIB files for the device's software release from the HPE Aruba Netw
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `ArubaOS-Switch - Operational Collection.3em` and `ArubaOS-Switch - Health and Performance Collection.3em`.
 3. Assign **ArubaOS-Switch - Operational Collection** and **ArubaOS-Switch - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -60,7 +60,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### ArubaOS-Switch - Operational Collection
 
-#### ArubaOS-Switch - PoE Ports (1 minute)
+#### ArubaOS-Switch - PoE Ports (5 minutes)
 
 Power over Ethernet (PoE) on each port as ArubaOS-Switch reports it beyond the standard tables: its operational status, power supplied, power the powered device draws, average and peak power, current and voltage. Rows are identified by PSE group and port.
 
@@ -74,7 +74,7 @@ From `HP-ICF-POE-MIB::hpicfPoePethPsePortTable`.
 - `CurrentMa`: Current supplied, milliamperes (`hpicfPoePethPsePortCurrent`).
 - `VoltageV`: Voltage supplied, volts, from the MIB's dV (its description says tens of volts) (`$hpicfPoePethPsePortVoltage / 10.0`).
 
-#### ArubaOS-Switch - PoE Power (1 minute)
+#### ArubaOS-Switch - PoE Power (5 minutes)
 
 Power over Ethernet (PoE) power on each power source equipment (PSE): total power available from internal and external supplies, power allocated to its ports, failover power and redundant power. Rows are identified by entPhysicalIndex.
 
@@ -85,7 +85,7 @@ From `HP-ICF-POE-MIB::hpicfPseFeaturesTable`.
 - `FailoverW`: Failover power, watts (`hpicfPseFailoverPower`).
 - `RedundantW`: Redundant PoE power available, watts (`hpicfPseRedundantPower`).
 
-#### ArubaOS-Switch - PoE PSE Load (1 minute)
+#### ArubaOS-Switch - PoE PSE Load (5 minutes)
 
 Power over Ethernet (PoE) load on each PSE group: its PoE operating state, peak and average power, and remaining guaranteed power, from two tables that extend the standard main PSE table, matched by row index. Rows are identified by PSE group.
 
@@ -96,7 +96,7 @@ From `HP-ICF-POE-MIB::hpicfPoePethPsePowerTable`.
 - `AverageW`: Average power of the PSE, watts (`hpicfPoePethPseAvgPower`).
 - `GuaranteedRemainingW`: Guaranteed power remaining, watts (`hpicfPoePethPseRemGrntPower`).
 
-#### ArubaOS-Switch - Distributed Trunking (1 minute)
+#### ArubaOS-Switch - Distributed Trunking (5 minutes)
 
 Distributed trunking (DT) between a pair of switches: inter-switch connection (ISC) hello packets and peer keepalive packets sent and received, as rates and as counts since the previous poll. Received keepalives falling to zero mean the peer is not heard.
 
@@ -111,7 +111,7 @@ From `DT-MIB` scalars.
 - `KeepAlivesReceived`: Valid peer keepalive packets received since the previous poll (`delta(hpSwitchDtPeerKeepAlivePktsRecv)`).
 - `KeepAlivesReceivedPerSec`: Valid peer keepalive packets received, per second (`rate(hpSwitchDtPeerKeepAlivePktsRecv)`).
 
-#### ArubaOS-Switch - Distributed Trunking MAC Sync (1 minute)
+#### ArubaOS-Switch - Distributed Trunking MAC Sync (5 minutes)
 
 Distributed trunking (DT) MAC address synchronisation over the inter-switch connection: MAC learn and MAC age-out packets sent to and received from the peer, as rates and as counts since the previous poll.
 
@@ -126,7 +126,7 @@ From `DT-MIB` scalars.
 - `AgeOutsReceived`: MAC age-outs received from the peer since the previous poll (`delta(hpSwitchDtIscMACAgedPktsRecv)`).
 - `AgeOutsReceivedPerSec`: MAC age-outs received from the peer, per second (`rate(hpSwitchDtIscMACAgedPktsRecv)`).
 
-#### ArubaOS-Switch - VRRP Near Failovers (1 minute)
+#### ArubaOS-Switch - VRRP Near Failovers (5 minutes)
 
 Near failovers of each backup VRRP virtual router: times it went two advertisement intervals without hearing the master, as a rate and as a count since the previous poll. Rows are identified by ifIndex and virtual router ID.
 
@@ -135,7 +135,7 @@ From `HP-ICF-VRRP-MIB::hpicfVrrpStatsTable`.
 - `NearFailovers`: Near failovers since the previous poll (`delta(hpicfVrrpStatsNearFailovers)`).
 - `NearFailoversPerSec`: Near failovers, per second (`rate(hpicfVrrpStatsNearFailovers)`).
 
-#### ArubaOS-Switch - Loop Protection (1 minute)
+#### ArubaOS-Switch - Loop Protection (5 minutes)
 
 Loop protection on each port: whether it is enabled, whether a loop is detected, loops detected as a rate and as a count since the previous poll, when the last loop was detected, and the VLAN it was detected on. Rows are identified by ifIndex.
 
@@ -150,7 +150,7 @@ From `HP-ICF-BRIDGE::hpicfBridgeLoopProtectPortTable`.
 
 ### ArubaOS-Switch - Health and Performance Collection
 
-#### ArubaOS-Switch - CPU Utilization (1 minute)
+#### ArubaOS-Switch - CPU Utilization (5 minutes)
 
 CPU busy percentage of the switch.
 
@@ -158,7 +158,7 @@ From `STATISTICS-MIB` scalars.
 
 - `CpuPct`: CPU utilization, percent (`hpSwitchCpuStat`).
 
-#### ArubaOS-Switch - Memory (1 minute)
+#### ArubaOS-Switch - Memory (5 minutes)
 
 Installed, free and allocated memory per slot (stack member or module).
 
@@ -166,9 +166,9 @@ From `NETSWITCH-MIB::hpLocalMemTable`.
 
 - `TotalBytes`: Installed memory, bytes (`hpLocalMemTotalBytes`).
 - `FreeBytes`: Unallocated memory, bytes (`hpLocalMemFreeBytes`).
-- `UsedPct`: Allocated memory as a percentage of installed memory (`$hpLocalMemAllocBytes * 100 / $TotalBytes`).
+- `UsedPct`: Allocated memory as a percentage of installed memory (`($hpLocalMemAllocBytes / $TotalBytes) * 100`).
 
-#### ArubaOS-Switch - Chassis Sensors (1 minute)
+#### ArubaOS-Switch - Chassis Sensors (5 minutes)
 
 State of each fan, power supply and temperature sensor, and how often each has failed.
 
@@ -178,7 +178,7 @@ From `HP-ICF-CHASSIS::hpicfSensorTable`, one row per `hpicfSensorDescr`.
 - `FailuresPerSec`: Transitions of the sensor into the bad state, per second (`rate(hpicfSensorFailures)`).
 - `Failures`: Transitions of the sensor into the bad state since the previous poll (`delta(hpicfSensorFailures)`).
 
-#### ArubaOS-Switch - Stack Ports (1 minute)
+#### ArubaOS-Switch - Stack Ports (5 minutes)
 
 State of each stacking port, per stack member, on stacked ArubaOS-Switch (ProVision) switches.
 
@@ -204,7 +204,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

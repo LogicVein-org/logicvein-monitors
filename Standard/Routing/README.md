@@ -1,6 +1,6 @@
 # Standard Routing Operational Collection
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -38,7 +38,7 @@ ThirdEye's built-in MIB store already includes all of these modules, so no MIB i
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Standard Routing - Operational Collection.3em`.
 3. Assign **Standard Routing - Operational Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in the set. Review the set before enabling automatic assignment in your environment.
 
@@ -46,7 +46,7 @@ Automatic assignment to newly discovered devices is disabled in the set. Review 
 
 The set contains 5 SNMP monitors. Metrics carry friendly names; each lists the MIB object it reads or the formula it computes.
 
-### Routing - BGP Peers (1 minute)
+### Routing - BGP Peers (5 minutes)
 
 Each BGP peer's session state, administrative status and remote AS, how long the session has been established, session flaps, and updates in each direction. Rows are identified by the peer's address. BGP4-MIB covers IPv4 peers only.
 
@@ -64,7 +64,7 @@ From `BGP4-MIB::bgpPeerTable`.
 - `UpdatesOutPerSec`: Updates sent, per second (`rate(bgpPeerOutUpdates)`).
 - `SinceUpdateInSecs`: Seconds since the last update was received (`bgpPeerInUpdateElapsedTime`).
 
-### Routing - OSPF Neighbors (1 minute)
+### Routing - OSPF Neighbors (5 minutes)
 
 Each OSPF neighbour's adjacency state, router ID and priority, adjacency state changes, and its link-state retransmission queue. Rows are identified by the neighbour's address.
 
@@ -77,7 +77,7 @@ From `OSPF-MIB::ospfNbrTable`.
 - `StateChangesPerSec`: Adjacency state changes or errors, per second (`rate(ospfNbrEvents)`).
 - `RetransmitQueue`: Link-state advertisements waiting to be retransmitted to the neighbour (`ospfNbrLsRetransQLen`).
 
-### Routing - VRRP Routers (1 minute)
+### Routing - VRRP Routers (5 minutes)
 
 Each VRRP virtual router's first-hop redundancy state, administrative state, priority and preemption, with its master and primary addresses. Rows are identified by the interface's ifIndex and the virtual router ID.
 
@@ -90,7 +90,7 @@ From `VRRP-MIB::vrrpOperTable`.
 - `MasterIp`: Address of the current master (`vrrpOperMasterIpAddr`).
 - `PrimaryIp`: This router's address used as the source of its advertisements (`vrrpOperPrimaryIpAddr`).
 
-### Routing - VRRPv3 Routers (1 minute)
+### Routing - VRRPv3 Routers (5 minutes)
 
 Each VRRP version 3 virtual router's first-hop redundancy state, priority, preemption and accept mode, master and primary addresses, advertisement interval and uptime, for IPv4 and IPv6. Rows are identified by the interface's ifIndex, the virtual router ID and the address type; Routing - VRRP Routers covers VRRP version 2.
 
@@ -106,7 +106,7 @@ From `VRRPV3-MIB::vrrpv3OperationsTable`.
 - `AdvertisementSecs`: Seconds between advertisements (`$vrrpv3OperationsAdvInterval / 100.0`).
 - `Uptime`: Time since the virtual router left the initialize state, hundredths of a second (TimeTicks, saved raw) (`vrrpv3OperationsUpTime`).
 
-### Routing - Route Table (1 minute)
+### Routing - Route Table (5 minutes)
 
 Routes in the routing table, from the current and the deprecated IPv4-only count, and valid routes discarded.
 
@@ -136,7 +136,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

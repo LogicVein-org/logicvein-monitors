@@ -1,6 +1,6 @@
 # Cisco Catalyst 9800 WLC Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Cisco C9800-CL running IOS XE 17.15.4d
 
@@ -72,7 +72,7 @@ From `OLD-CISCO-SYSTEM-MIB` scalars.
 
 - `ReloadReason`: Reason for the last reload, as text (`whyReload`).
 
-#### Cisco 9800 WLC - Joined Access Points (1 minute)
+#### Cisco 9800 WLC - Joined Access Points (5 minutes)
 
 The number of wireless access points joined to the controller.
 
@@ -81,7 +81,7 @@ Needs `CISCO-LWAPP-AP-MIB` imported: the objects this monitor polls are not in T
 
 - `JoinedAps`: Access points currently joined to the controller (`cLApGlobalAPConnectCount`).
 
-#### Cisco 9800 WLC - Access Point State (1 minute)
+#### Cisco 9800 WLC - Access Point State (5 minutes)
 
 Each joined wireless access point's operational and administrative state.
 
@@ -104,7 +104,7 @@ From `AIRESPACE-WIRELESS-MIB::bsnAPTable`, one row per `bsnAPName`.
 - `PrimaryController`: Name of the controller configured as the access point's primary (`bsnAPPrimaryMwarName`).
 - `RadioSlots`: Number of radio interfaces on the access point (`bsnAPNumOfSlots`).
 
-#### Cisco 9800 WLC - Access Point Load (1 minute)
+#### Cisco 9800 WLC - Access Point Load (5 minutes)
 
 Each joined access point's CPU and memory use, current and averaged over the controller's statistics interval, and its associated and active clients.
 
@@ -117,7 +117,7 @@ From `CISCO-LWAPP-AP-MIB::cLApTable`, one row per `cLApName`.
 - `AssociatedClients`: Clients associated with the access point (`cLApAssociatedClientCount`).
 - `ActiveClients`: Active clients on the access point (`cLApActiveClientCount`).
 
-#### Cisco 9800 WLC - Access Point Stability (1 minute)
+#### Cisco 9800 WLC - Access Point Stability (5 minutes)
 
 Each joined access point's uptime and time since it joined the controller, its last reboot reason and administrative state, abnormal offline events, echo response time and lost echo responses.
 
@@ -133,7 +133,7 @@ From `CISCO-LWAPP-AP-MIB::cLApTable`, one row per `cLApName`.
 - `EchoResponsesLostPerSec`: Echo responses lost between the controller and the access point, per second (`rate(cLApEchoResponseLossCount)`).
 - `ControllerJoinedAps`: Access points joined to the controller: the MIB's deprecated per-row copy of the controller-wide count, the same on every row (`cLApConnectCount`).
 
-#### Cisco 9800 WLC - Radios (1 minute)
+#### Cisco 9800 WLC - Radios (5 minutes)
 
 Each access point radio's slot, band, channel, transmit power level, active WLANs, operational and administrative state, and users. Rows are identified by the access point's MAC address and the radio slot (the table index); the table has no name column.
 
@@ -148,7 +148,7 @@ From `AIRESPACE-WIRELESS-MIB::bsnAPIfTable`.
 - `AdminStatus`: Administrative state (enable, disable) (`bsnAPIfAdminStatus`).
 - `Users`: Users associated with the radio (typed Counter32 in the MIB, but a current count) (`bsnApIfNoOfUsers`).
 
-#### Cisco 9800 WLC - Radio Load (1 minute)
+#### Cisco 9800 WLC - Radio Load (5 minutes)
 
 Each access point radio's receive, transmit and channel utilization, and its clients and clients with poor signal-to-noise ratio at the last measurement interval. Rows are identified as in Cisco 9800 WLC - Radios.
 
@@ -160,7 +160,7 @@ From `AIRESPACE-WIRELESS-MIB::bsnAPIfLoadParametersTable`.
 - `Clients`: Clients on the radio at the last measurement interval (`bsnAPIfLoadNumOfClients`).
 - `PoorSnrClients`: Clients with a poor signal-to-noise ratio at the last measurement interval (`bsnAPIfPoorSNRClients`).
 
-#### Cisco 9800 WLC - WLANs (1 minute)
+#### Cisco 9800 WLC - WLANs (5 minutes)
 
 Each WLAN's administrative state, radio policy, associated clients, interface and SSID broadcast setting, labelled by SSID.
 
@@ -173,7 +173,7 @@ From `AIRESPACE-WIRELESS-MIB::bsnDot11EssTable`, one row per `bsnDot11EssSsid`.
 - `Interface`: Name of the interface the WLAN uses (`bsnDot11EssInterfaceName`).
 - `BroadcastSsid`: Whether the SSID is broadcast (enable, disable) (`bsnDot11EssBroadcastSsid`).
 
-#### Cisco 9800 WLC - RADIUS Authentication Servers (1 minute)
+#### Cisco 9800 WLC - RADIUS Authentication Servers (5 minutes)
 
 Each configured RADIUS authentication server's state, port and retransmit timeout, labelled by its address. Shared secrets and key-wrapping material are not polled.
 
@@ -187,7 +187,7 @@ From `AIRESPACE-WIRELESS-MIB::bsnRadiusAuthServerTable`, one row per `bsnRadiusA
 
 ### Cisco Catalyst 9800 WLC - Health and Performance Collection
 
-#### Cisco 9800 WLC - CPU and Memory (1 minute)
+#### Cisco 9800 WLC - CPU and Memory (5 minutes)
 
 Controller CPU busy over 1 and 5 minutes, and memory used, free and in use as a percentage, per processor, from the original CISCO-PROCESS-MIB objects ThirdEye's own Catalyst 9800 WLC templates poll.
 
@@ -198,7 +198,7 @@ Covers the TES built-in templates *Cisco CPU*, *Cisco Catalyst 9800 WLC - CPU Ut
 - `Busy5MinPct`: CPU busy over the last 5 minutes, percent (`cpmCPUTotal5min`).
 - `MemoryUsedKB`: Memory in use, kilobytes (`cpmCPUMemoryUsed`).
 - `MemoryFreeKB`: Memory free, kilobytes (`cpmCPUMemoryFree`).
-- `MemoryPct`: Memory in use as a percentage of used plus free (`$MemoryUsedKB * 100.0 / ($MemoryUsedKB + $MemoryFreeKB)`).
+- `MemoryPct`: Memory in use as a percentage of used plus free (`($MemoryUsedKB / ($MemoryUsedKB + $MemoryFreeKB)) * 100.0`).
 
 `delta(x)` is the change in counter `x` between the last two polls; `rate(x)` is that change divided by the monitor's polling period in seconds (TES's `$pollingSecs`), a per-second rate.
 
@@ -220,7 +220,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

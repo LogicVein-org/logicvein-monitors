@@ -1,6 +1,6 @@
 # Dell PowerEdge Server (OpenManage) Health and Performance Collection
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -36,7 +36,7 @@ Download the MIB files for the device's software release from Dell's support sit
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Dell PowerEdge Server (OpenManage) - Health and Performance Collection.3em`.
 3. Assign **Dell PowerEdge Server (OpenManage) - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in the set. Review the set before enabling automatic assignment in your environment.
 
@@ -46,7 +46,7 @@ These host queries match the devices the set is meant for: `sysObjectID=1.3.6.1.
 
 The set contains 4 SNMP monitors. Metrics carry friendly names; each lists the MIB object it reads or the formula it computes.
 
-### Dell Server - Temperature (1 minute)
+### Dell Server - Temperature (5 minutes)
 
 Reading and status of each temperature probe.
 
@@ -55,7 +55,7 @@ From `MIB-Dell-10892::temperatureProbeTable`, one row per `temperatureProbeLocat
 - `TemperatureC`: Probe reading, degrees Celsius (the MIB reports tenths of a degree) (`$temperatureProbeReading / 10.0`).
 - `Status`: Probe status (`temperatureProbeStatus`).
 
-### Dell Server - Power Supplies (1 minute)
+### Dell Server - Power Supplies (5 minutes)
 
 Status of each power supply.
 
@@ -63,7 +63,7 @@ From `MIB-Dell-10892::powerSupplyTable`, one row per `powerSupplyLocationName`.
 
 - `Status`: Power supply status (`powerSupplyStatus`).
 
-### Dell Server - Voltage (1 minute)
+### Dell Server - Voltage (5 minutes)
 
 Status of each voltage probe.
 
@@ -71,7 +71,7 @@ From `MIB-Dell-10892::voltageProbeTable`, one row per `voltageProbeLocationName`
 
 - `Status`: Voltage probe status (`voltageProbeStatus`).
 
-### Dell Server - Memory (1 minute)
+### Dell Server - Memory (5 minutes)
 
 Physical memory of the operating system, as the agent reports it.
 
@@ -79,7 +79,7 @@ From `MIB-Dell-10892::operatingSystemMemoryTable`.
 
 - `TotalKB`: Total physical memory, KB (`operatingSystemMemoryTotalPhysicalSize`).
 - `AvailableKB`: Available physical memory, KB (`operatingSystemMemoryAvailablePhysicalSize`).
-- `UsedPct`: Physical memory in use as a percentage of total (`($TotalKB - $AvailableKB) * 100.0 / $TotalKB`).
+- `UsedPct`: Physical memory in use as a percentage of total (`(($TotalKB - $AvailableKB) / $TotalKB) * 100.0`).
 
 `delta(x)` is the change in counter `x` between the last two polls; `rate(x)` is that change divided by the monitor's polling period in seconds (TES's `$pollingSecs`), a per-second rate.
 
@@ -94,7 +94,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

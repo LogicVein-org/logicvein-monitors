@@ -1,6 +1,6 @@
 # Avocent ACS Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -41,7 +41,7 @@ Download the MIB files for the device's software release from Vertiv's Avocent s
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Avocent ACS - Operational Collection.3em` and `Avocent ACS - Health and Performance Collection.3em`.
 3. Assign **Avocent ACS - Operational Collection** and **Avocent ACS - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -53,7 +53,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Avocent ACS - Operational Collection
 
-#### Avocent ACS - Serial Ports (1 minute)
+#### Avocent ACS - Serial Ports (5 minutes)
 
 Each serial port: its status and profile, the DCD and CTS signal states, and bytes sent and received and framing, parity, break and overrun errors as the console server reports their totals. Rows are identified by port number, labelled by port name.
 
@@ -70,7 +70,7 @@ From `ACS-MIB::acsSerialPortTable`, one row per `acsSerialPortTableName`.
 - `Breaks`: Breaks (typed Integer32, saved as reported) (`acsSerialPortTableBreak`).
 - `Overruns`: Overrun errors (typed Integer32, saved as reported) (`acsSerialPortTableOverrun`).
 
-#### Avocent ACS - Session Count (1 minute)
+#### Avocent ACS - Session Count (5 minutes)
 
 The number of active sessions on the console server.
 
@@ -78,7 +78,7 @@ From `ACS-MIB` scalars.
 
 - `Sessions`: Active sessions (`acsActiveSessionsNumberOfSession`).
 
-#### Avocent ACS - Active Sessions (1 minute)
+#### Avocent ACS - Active Sessions (5 minutes)
 
 Each active session: its user and group, type, connection, how long it has run and where it comes from, as the console server reports them as text. Rows are identified by session index.
 
@@ -91,7 +91,7 @@ From `ACS-MIB::acsActiveSessionsTable`.
 - `Duration`: Time of the session, as text (`acsActiveSessionsTableSessionTime`).
 - `From`: Where the session comes from (`acsActiveSessionsTableFrom`).
 
-#### Avocent ACS - Managed PDUs (1 minute)
+#### Avocent ACS - Managed PDUs (5 minutes)
 
 Each power distribution unit (PDU) the console server manages: its current, voltage, power and power factor, alarm state, and number of outlets. Rows are identified by serial port and PDU, labelled by PDU ID.
 
@@ -104,7 +104,7 @@ From `ACS-MIB::acsPowerMgmtPDUTable`, one row per `acsPowerMgmtPDUTablePduId`.
 - `Alarm`: Alarm state (1 normal, 2 blow-fuse, 3 hw-ocp, 4 high-critical, 5 high-warning, 6 low-warning, 7 low-critical) (`acsPowerMgmtPDUTableAlarm`).
 - `Outlets`: Number of outlets (`acsPowerMgmtPDUTableNumberOfOutlets`).
 
-#### Avocent ACS - Managed Outlets (1 minute)
+#### Avocent ACS - Managed Outlets (5 minutes)
 
 Each outlet of a managed PDU: whether it is on. Rows are identified by serial port, PDU and outlet, labelled by outlet name.
 
@@ -112,7 +112,7 @@ From `ACS-MIB::acsPowerMgmtOutletsTable`, one row per `acsPowerMgmtOutletsTableN
 
 - `Status`: Outlet status (1 off, 2 on) (`acsPowerMgmtOutletsTableStatus`).
 
-#### Avocent ACS - Outlet Power (1 minute)
+#### Avocent ACS - Outlet Power (5 minutes)
 
 Each outlet of a managed PDU: its current, voltage, power, power factor and alarm state. Rows are identified by serial port, PDU and outlet, as in Avocent ACS - Managed Outlets.
 
@@ -124,7 +124,7 @@ From `ACS-MIB::acsPowerMgmtOutElecMonTable`.
 - `PowerFactor`: Power factor (from hundredths) (`$acsPowerMgmtOutElecMonTablePowerFactorValue / 100.0`).
 - `Alarm`: Alarm state (1 normal, 2 blow-fuse, 3 hw-ocp, 4 high-critical, 5 high-warning, 6 low-warning, 7 low-critical) (`acsPowerMgmtOutElecMonTableAlarm`).
 
-#### Avocent ACS - Managed PDU Environment (1 minute)
+#### Avocent ACS - Managed PDU Environment (5 minutes)
 
 The environment each managed PDU reports from its sensors: each sensor's type, whether a digital sensor is triggered, and the value an analog sensor detects. Rows are identified by serial port, PDU and sensor, labelled by sensor name.
 
@@ -136,7 +136,7 @@ From `ACS-MIB::acsPowerMgmtEnvMonTable`, one row per `acsPowerMgmtEnvMonTableNam
 
 ### Avocent ACS - Health and Performance Collection
 
-#### Avocent ACS - Power Supplies (1 minute)
+#### Avocent ACS - Power Supplies (5 minutes)
 
 State of the console server's two power supplies.
 
@@ -162,7 +162,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

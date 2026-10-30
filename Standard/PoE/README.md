@@ -1,6 +1,6 @@
 # Standard PoE Operational Collection
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -34,7 +34,7 @@ ThirdEye's built-in MIB store already includes this module, so no MIB import is 
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Standard PoE - Operational Collection.3em`.
 3. Assign **Standard PoE - Operational Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in the set. Review the set before enabling automatic assignment in your environment.
 
@@ -42,7 +42,7 @@ Automatic assignment to newly discovered devices is disabled in the set. Review 
 
 The set contains 3 SNMP monitors. Metrics carry friendly names; each lists the MIB object it reads or the formula it computes.
 
-### PoE - PSE Capacity and Consumption (1 minute)
+### PoE - PSE Capacity and Consumption (5 minutes)
 
 Power over Ethernet (PoE) per power sourcing equipment (PSE) group: nominal capacity, operational status, measured consumption against it, and the configured usage threshold.
 
@@ -51,10 +51,10 @@ From `POWER-ETHERNET-MIB::pethMainPseTable`.
 - `CapacityW`: Nominal PoE capacity, watts (`pethMainPsePower`).
 - `OperStatus`: PSE status (1 on, 2 off, 3 faulty) (`pethMainPseOperStatus`).
 - `ConsumptionW`: Measured PoE consumption, watts (`pethMainPseConsumptionPower`).
-- `ConsumptionPct`: Measured consumption, percent of capacity (`$ConsumptionW * 100.0 / $CapacityW`).
+- `ConsumptionPct`: Measured consumption, percent of capacity (`($ConsumptionW / $CapacityW) * 100.0`).
 - `UsageThresholdPct`: The switch's configured usage threshold, percent (`pethMainPseUsageThreshold`).
 
-### PoE - Port State (1 minute)
+### PoE - Port State (5 minutes)
 
 Power over Ethernet (PoE) on each port: whether it is enabled, its detection status, priority and power class. Rows are identified by PSE group and port, which are not ifIndex values. An enabled port with nothing attached reports searching.
 
@@ -65,7 +65,7 @@ From `POWER-ETHERNET-MIB::pethPsePortTable`.
 - `Priority`: Power priority (1 critical, 2 high, 3 low) (`pethPsePortPowerPriority`).
 - `PowerClass`: Power class, meaningful while delivering power (1 class0, 2 class1, 3 class2, 4 class3, 5 class4) (`pethPsePortPowerClassifications`).
 
-### PoE - Port Faults (1 minute)
+### PoE - Port Faults (5 minutes)
 
 Power over Ethernet (PoE) faults on each port, as counts since the previous poll and as rates: powered devices lost (MPS absent), invalid signatures, power denied, overloads and short circuits. Rows are identified by PSE group and port. An MPS-absent count can mean the device was unplugged.
 
@@ -100,7 +100,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

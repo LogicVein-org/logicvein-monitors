@@ -1,6 +1,6 @@
 # Blue Coat ProxySG Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -44,7 +44,7 @@ Download the MIB files for the device's software release from Broadcom's support
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Blue Coat ProxySG - Operational Collection.3em` and `Blue Coat ProxySG - Health and Performance Collection.3em`.
 3. Assign **Blue Coat ProxySG - Operational Collection** and **Blue Coat ProxySG - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -56,7 +56,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Blue Coat ProxySG - Operational Collection
 
-#### Blue Coat - HTTP Proxy (1 minute)
+#### Blue Coat - HTTP Proxy (5 minutes)
 
 HTTP client and server connections, and client requests, hits and errors, as rates and as counts since the previous poll.
 
@@ -71,7 +71,7 @@ From `BLUECOAT-SG-PROXY-MIB` scalars.
 - `Errors`: HTTP errors caused by client connections since the previous poll (`delta(sgProxyHttpClientErrors)`).
 - `ErrorsPerSec`: HTTP errors caused by client connections, per second (`rate(sgProxyHttpClientErrors)`).
 
-#### Blue Coat - HTTP Proxy Traffic (1 minute)
+#### Blue Coat - HTTP Proxy Traffic (5 minutes)
 
 HTTP client traffic through the proxy, as bit and byte rates and as bytes since the previous poll.
 
@@ -86,7 +86,7 @@ From `BLUECOAT-SG-PROXY-MIB` scalars.
 
 ### Blue Coat ProxySG - Health and Performance Collection
 
-#### Blue Coat - CPU per Core (1 minute)
+#### Blue Coat - CPU per Core (5 minutes)
 
 Busy time of each CPU core.
 
@@ -94,7 +94,7 @@ From `BLUECOAT-SG-PROXY-MIB::sgProxyCpuCoreTable`.
 
 - `BusyPct`: CPU core busy time, percent (`sgProxyCpuCoreBusyPerCent`).
 
-#### Blue Coat - Memory (1 minute)
+#### Blue Coat - Memory (5 minutes)
 
 Memory pressure on the appliance.
 
@@ -102,7 +102,7 @@ From `BLUECOAT-SG-PROXY-MIB` scalars.
 
 - `MemoryPressurePct`: Memory used by the proxy as a percentage of the total available (`sgProxyMemoryPressure`).
 
-#### Blue Coat - Resource Usage (1 minute)
+#### Blue Coat - Resource Usage (5 minutes)
 
 Use of each monitored resource (such as disk), and whether it is above its high threshold.
 
@@ -111,7 +111,7 @@ From `BLUECOAT-SG-USAGE-MIB::deviceUsageTable`, one row per `deviceUsageName`.
 - `UsedPct`: Resource in use, percent (`deviceUsagePercent`).
 - `Status`: Usage status (1 ok, 2 high) (`deviceUsageStatus`).
 
-#### Blue Coat - Sensors (1 minute)
+#### Blue Coat - Sensors (5 minutes)
 
 Reading and state of each hardware sensor. Value is scaled by 10 to the power Scale, in the sensor's Units.
 
@@ -123,7 +123,7 @@ From `BLUECOAT-SG-SENSOR-MIB::deviceSensorValueTable`, one row per `deviceSensor
 - `Code`: Sensor condition (1 ok; 7 to 12 voltage or temperature warnings; 13 to 15 fan slow or stopped; other values in the MIB) (`deviceSensorCode`).
 - `Status`: Sensor operational status (1 ok, 2 unavailable, 3 nonoperational) (`deviceSensorStatus`).
 
-#### Blue Coat - Disks (1 minute)
+#### Blue Coat - Disks (5 minutes)
 
 Status of each disk.
 
@@ -144,7 +144,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

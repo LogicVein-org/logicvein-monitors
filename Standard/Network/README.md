@@ -1,6 +1,6 @@
 # Standard Network Interfaces Health and Performance Collection
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: HP ProCurve 2626 and Cisco Catalyst 2950
 
@@ -34,7 +34,7 @@ ThirdEye's built-in MIB store already includes this module, so no MIB import is 
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Standard Network Interfaces - Health and Performance Collection.3em`.
 3. Assign **Standard Network Interfaces - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in the set. Review the set before enabling automatic assignment in your environment.
 
@@ -44,18 +44,19 @@ These host queries match the devices the set is meant for: `traits=snmp`.
 
 The set contains 2 SNMP monitors. Metrics carry friendly names; each lists the MIB object it reads or the formula it computes.
 
-### Interfaces - Traffic (1 minute)
+### Interfaces - Traffic (5 minutes)
 
-Throughput, utilization and packet rates per interface, with the bytes and packets moved since the previous poll, from the 64-bit counters.
+Throughput, utilization and packet rates per interface, with the bytes and packets moved since the previous poll, from the 64-bit counters, and each interface's description, read from ifTable and matched to the ifXTable rows by ifIndex.
 
-From `IF-MIB::ifXTable`, one row per `ifName`.
+From `IF-MIB::ifXTable`, one row per `ifName`, also saved as `InterfaceName` for trigger messages.
 Covers the TES built-in template *Interface Stats (HighSpeed)*: it polls every object that template polls, under its own names.
 
+- `Description`: Interface description from the agent (ifDescr); IF-MIB asks for the manufacturer, product name and hardware or software version (`ifDescr`).
 - `BitsInPerSec`: Inbound traffic, bits per second (`rate(ifHCInOctets) * 8`).
 - `BitsOutPerSec`: Outbound traffic, bits per second (`rate(ifHCOutOctets) * 8`).
 - `SpeedMbps`: Interface speed, Mb/s (`ifHighSpeed`).
-- `UtilizationInPct`: Inbound traffic as a percentage of the interface speed (SpeedMbps) (`rate(ifHCInOctets) * 8 / ($SpeedMbps * 10000)`).
-- `UtilizationOutPct`: Outbound traffic as a percentage of the interface speed (SpeedMbps) (`rate(ifHCOutOctets) * 8 / ($SpeedMbps * 10000)`).
+- `UtilizationInPct`: Inbound traffic as a percentage of the interface speed (SpeedMbps) (`rate(ifHCInOctets) * 8 / ($SpeedMbps * 1000000.0) * 100`).
+- `UtilizationOutPct`: Outbound traffic as a percentage of the interface speed (SpeedMbps) (`rate(ifHCOutOctets) * 8 / ($SpeedMbps * 1000000.0) * 100`).
 - `BytesIn`: Bytes received since the previous poll (`delta(ifHCInOctets)`).
 - `BytesInPerSec`: Bytes received, per second (`rate(ifHCInOctets)`).
 - `BytesOut`: Bytes sent since the previous poll (`delta(ifHCOutOctets)`).
@@ -65,12 +66,13 @@ Covers the TES built-in template *Interface Stats (HighSpeed)*: it polls every o
 - `PacketsIn`: Unicast, multicast and broadcast packets received since the previous poll (`delta(ifHCInUcastPkts) + delta(ifHCInMulticastPkts) + delta(ifHCInBroadcastPkts)`).
 - `PacketsOut`: Unicast, multicast and broadcast packets sent since the previous poll (`delta(ifHCOutUcastPkts) + delta(ifHCOutMulticastPkts) + delta(ifHCOutBroadcastPkts)`).
 
-### Interfaces - Status and Errors (1 minute)
+### Interfaces - Status and Errors (5 minutes)
 
-Each interface's alias and its administrative and operational state, and errored and discarded packets, as rates and as counts since the previous poll. The rows are labelled by ifName, and the alias is read from ifXTable, matched to the ifTable rows by ifIndex.
+Each interface's description, alias and its administrative and operational state, and errored and discarded packets, as rates and as counts since the previous poll. The rows are labelled by ifName, and the alias is read from ifXTable, matched to the ifTable rows by ifIndex.
 
-From `IF-MIB::ifTable`, one row per `ifName`.
+From `IF-MIB::ifTable`, one row per `ifName`, also saved as `InterfaceName` for trigger messages.
 
+- `Description`: Interface description from the agent (ifDescr); IF-MIB asks for the manufacturer, product name and hardware or software version (`ifDescr`).
 - `Alias`: Interface alias, the description an administrator gave the interface (`ifAlias`).
 - `AdminStatus`: Administrative state (up, down, testing) (`ifAdminStatus`).
 - `OperStatus`: Operational state (up, down, testing, unknown, dormant, notPresent, lowerLayerDown) (`ifOperStatus`).
@@ -89,7 +91,7 @@ From `IF-MIB::ifTable`, one row per `ifName`.
 
 A table monitor returns no rows when the device lacks the feature or hardware it covers. An empty table does not necessarily indicate a collection failure: first confirm that the feature is present and configured on the device.
 
-- Interfaces - Traffic reads the 64-bit interface counters. A device without them, such as a Cisco 2501, returns nothing for it.
+- Interfaces - Traffic reads each interface's description (ifDescr) from ifTable, matched by ifIndex, and the 64-bit interface counters from ifXTable. A device without them, such as a Cisco 2501, returns nothing for it.
 - Interfaces - Status and Errors reads its status and error counters from ifTable, and each interface's name (ifName) and Alias from ifXTable, matched by ifIndex. A device that does not implement ifXTable returns no ifName or ifAlias.
 
 ## Validation
@@ -99,7 +101,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

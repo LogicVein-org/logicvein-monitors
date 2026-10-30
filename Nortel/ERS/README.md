@@ -1,6 +1,6 @@
 # Nortel ERS and BayStack Switch Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -44,7 +44,7 @@ Download the MIB files for the device's software release from Extreme Networks' 
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Nortel ERS and BayStack Switch - Operational Collection.3em` and `Nortel ERS and BayStack Switch - Health and Performance Collection.3em`.
 3. Assign **Nortel ERS and BayStack Switch - Operational Collection** and **Nortel ERS and BayStack Switch - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -56,7 +56,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Nortel ERS and BayStack Switch - Operational Collection
 
-#### Nortel ERS - MSTP CIST (1 minute)
+#### Nortel ERS - MSTP CIST (5 minutes)
 
 The common and internal spanning tree (CIST) of multiple spanning tree (MSTP): the root bridge, the root cost and port, the time since the last topology change, and topology changes and root bridge changes, as rates and as counts since the previous poll.
 
@@ -71,7 +71,7 @@ From `NORTEL-NETWORKS-MULTIPLE-SPANNING-TREE-MIB` scalars.
 - `RootChanges`: Root bridge changes since the previous poll (`delta(nnMstCistNewRootBridgeCount)`).
 - `RootChangesPerSec`: Root bridge changes, per second (`rate(nnMstCistNewRootBridgeCount)`).
 
-#### Nortel ERS - MSTP Instances (1 minute)
+#### Nortel ERS - MSTP Instances (5 minutes)
 
 Each multiple spanning tree (MSTP) instance: whether it is enabled, its regional root, this bridge's priority, the root cost and port, the time since the last topology change, and topology changes and root changes, as rates and as counts since the previous poll. Rows are identified by instance.
 
@@ -88,7 +88,7 @@ From `NORTEL-NETWORKS-MULTIPLE-SPANNING-TREE-MIB::nnMstBridgeTable`.
 - `RootChanges`: Regional root changes since the previous poll (`delta(nnMstBridgeNewRootCount)`).
 - `RootChangesPerSec`: Regional root changes, per second (`rate(nnMstBridgeNewRootCount)`).
 
-#### Nortel ERS - MSTP CIST Ports (1 minute)
+#### Nortel ERS - MSTP CIST Ports (5 minutes)
 
 Each port's common and internal spanning tree (CIST) state and role, whether it is an edge port and point-to-point, with transitions to forwarding, topology change notification BPDUs received and invalid MST BPDUs received, as rates and as counts since the previous poll. Rows are identified by bridge port number.
 
@@ -105,7 +105,7 @@ From `NORTEL-NETWORKS-MULTIPLE-SPANNING-TREE-MIB::nnMstCistPortTable`.
 - `InvalidMstReceived`: Invalid MST BPDUs received since the previous poll (`delta(nnMstCistPortInvalidMstBpduRxCount)`).
 - `InvalidMstReceivedPerSec`: Invalid MST BPDUs received, per second (`rate(nnMstCistPortInvalidMstBpduRxCount)`).
 
-#### Nortel ERS - MSTP Ports (1 minute)
+#### Nortel ERS - MSTP Ports (5 minutes)
 
 Each port's state and role in each multiple spanning tree (MSTP) instance, with transitions to forwarding and invalid BPDUs received, as rates and as counts since the previous poll. Rows are identified by bridge port number and instance.
 
@@ -118,7 +118,7 @@ From `NORTEL-NETWORKS-MULTIPLE-SPANNING-TREE-MIB::nnMstPortTable`.
 - `InvalidReceived`: Invalid BPDUs received since the previous poll (`delta(nnMstPortInvalidBPDUsRcvd)`).
 - `InvalidReceivedPerSec`: Invalid BPDUs received, per second (`rate(nnMstPortInvalidBPDUsRcvd)`).
 
-#### Nortel ERS - PoE Ports (1 minute)
+#### Nortel ERS - PoE Ports (5 minutes)
 
 Power over Ethernet (PoE) on each port as ERS reports it beyond the standard tables: its detailed status, whether an undercurrent or overcurrent was detected, and the voltage, current and power measured. Rows are identified by PSE group and port.
 
@@ -130,7 +130,7 @@ From `BAY-STACK-PETH-EXT-MIB::bspePethPsePortExtTable`.
 - `CurrentMa`: Measured current, milliamperes (`bspePethPsePortExtMeasuredCurrent`).
 - `PowerMw`: Measured power, milliwatts (`bspePethPsePortExtMeasuredPower`).
 
-#### Nortel ERS - VRRP Hold-Down and Backup Master (1 minute)
+#### Nortel ERS - VRRP Hold-Down and Backup Master (5 minutes)
 
 For each VRRP virtual router, as ERS extends the standard table: whether its hold-down timer is active and the seconds left on it, and whether backup master is enabled and up. Rows are identified by ifIndex and virtual router ID.
 
@@ -143,7 +143,7 @@ From `BAY-STACK-VRRP-EXT-MIB::bsveVrrpOperExtTable`.
 
 ### Nortel ERS and BayStack Switch - Health and Performance Collection
 
-#### Nortel ERS - CPU and Memory (1 minute)
+#### Nortel ERS - CPU and Memory (5 minutes)
 
 CPU busy over 1 and 10 minutes and memory per stack unit (S5-CHASSIS-MIB).
 
@@ -153,7 +153,7 @@ From `S5-CHASSIS-MIB::s5ChasUtilTable`.
 - `Cpu10MinPct`: CPU busy over the last 10 minutes, percent (`s5ChasUtilCPUUsageLast10Minutes`).
 - `MemoryTotalMB`: Total RAM, MB (`s5ChasUtilMemoryTotalMB`).
 - `MemoryAvailableMB`: Available RAM, MB (`s5ChasUtilMemoryAvailableMB`).
-- `MemoryUsedPct`: RAM in use as a percentage of total (`($MemoryTotalMB - $MemoryAvailableMB) * 100.0 / $MemoryTotalMB`).
+- `MemoryUsedPct`: RAM in use as a percentage of total (`(($MemoryTotalMB - $MemoryAvailableMB) / $MemoryTotalMB) * 100.0`).
 
 `delta(x)` is the change in counter `x` between the last two polls; `rate(x)` is that change divided by the monitor's polling period in seconds (TES's `$pollingSecs`), a per-second rate.
 
@@ -171,7 +171,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

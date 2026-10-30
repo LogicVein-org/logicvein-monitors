@@ -1,6 +1,6 @@
 # ExtremeXOS Switch Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -60,7 +60,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### ExtremeXOS Switch - Operational Collection
 
-#### ExtremeXOS - EAPS Domains (1 minute)
+#### ExtremeXOS - EAPS Domains (5 minutes)
 
 Each Ethernet Automatic Protection Switching (EAPS) ring domain's mode and state, labelled by the domain name. A master in complete state has its ring closed and protected; failed means the ring is broken.
 
@@ -69,7 +69,7 @@ From `EXTREME-EAPS-MIB::extremeEapsTable`, one row per `extremeEapsName`.
 - `Mode`: This switch's role in the domain (0 invalid, 1 master, 2 transit) (`extremeEapsMode`).
 - `State`: EAPS state (0 idle, 1 complete, 2 failed, 3 linksup, 4 linkdown, 5 preforwarding, 6 init; an older copy of the MIB adds 7 precomplete and 8 preinit, on a master) (`extremeEapsState`).
 
-#### ExtremeXOS - ESRP Domains (1 minute)
+#### ExtremeXOS - ESRP Domains (5 minutes)
 
 Each Extreme Standby Router Protocol (ESRP) domain's redundancy state and priority (the ESRP group is part of the row key, not a column the agent returns), its active and tracked ports, tracked routes and pings, and transitions to master and slave. Rows are identified by the VLAN's ifIndex and the ESRP group.
 
@@ -84,7 +84,7 @@ From `EXTREME-ESRP-MIB::extremeEsrpTable`.
 - `TransitionsToMaster`: Transitions to master in total (typed INTEGER, saved as reported) (`extremeEsrpNumTransitionsToMaster`).
 - `TransitionsToSlave`: Transitions to slave in total (typed INTEGER, saved as reported) (`extremeEsrpNumTransitionsToSlave`).
 
-#### ExtremeXOS - STP Domains (1 minute)
+#### ExtremeXOS - STP Domains (5 minutes)
 
 Each spanning tree domain (STPD): whether STP and RSTP are enabled, its tag and ports, the root bridge, root port and root cost, and topology changes as a rate and as a count since the previous poll, labelled by the domain name.
 
@@ -112,7 +112,7 @@ From `EXTREME-VLAN-MIB::extremeVlanIfTable`, one row per `extremeVlanIfDescr`.
 - `AdminEnabled`: Whether the VLAN is administratively enabled (TruthValue: 1 true, 2 false) (`extremeVlanIfAdminStatus`).
 - `IgnoresStp`: Whether the VLAN's ports ignore STP (TruthValue: 1 true, 2 false) (`extremeVlanIfIgnoreStpFlag`).
 
-#### ExtremeXOS - PoE Slots (1 minute)
+#### ExtremeXOS - PoE Slots (5 minutes)
 
 Power over Ethernet (PoE) on each slot as Extreme reports it beyond the standard tables: the PoE system's status, whether inline power is enabled, power allocated, reserved and measured, the most available, the slot's capacity, and which power supply is active.
 
@@ -127,7 +127,7 @@ From `EXTREME-POE-MIB::extremePethPseSlotTable`.
 - `CapacityW`: The slot's hardware capacity, watts (`extremePethSlotMaxCapacity`).
 - `ActivePsu`: The inline power supply in use (1 none, 2 internal, 3 external) (`extremePethSlotPSUActive`).
 
-#### ExtremeXOS - PoE Ports (1 minute)
+#### ExtremeXOS - PoE Ports (5 minutes)
 
 Power over Ethernet (PoE) on each port as Extreme reports it beyond the standard tables: measured power, the operator's power limit and reserved budget, and the violation precedence. Rows are identified by PSE group and port.
 
@@ -140,7 +140,7 @@ From `EXTREME-POE-MIB::extremePethPsePortTable`.
 
 ### ExtremeXOS Switch - Health and Performance Collection
 
-#### ExtremeXOS - Temperature (1 minute)
+#### ExtremeXOS - Temperature (5 minutes)
 
 Temperature inside the switch enclosure, and whether the over-temperature alarm is raised.
 
@@ -149,7 +149,7 @@ From `EXTREME-SYSTEM-MIB` scalars.
 - `TemperatureC`: Temperature inside the enclosure, degrees Celsius (`extremeCurrentTemperature`).
 - `OverTemperatureAlarm`: Over-temperature alarm (TruthValue: true(1), false(2)) (`extremeOverTemperatureAlarm`).
 
-#### ExtremeXOS - Fans (1 minute)
+#### ExtremeXOS - Fans (5 minutes)
 
 Whether each cooling fan is operational.
 
@@ -157,7 +157,7 @@ From `EXTREME-SYSTEM-MIB::extremeFanStatusTable`.
 
 - `Operational`: Fan operational (TruthValue: true(1), false(2)) (`extremeFanOperational`).
 
-#### ExtremeXOS - Power Supplies (1 minute)
+#### ExtremeXOS - Power Supplies (5 minutes)
 
 Status of each power supply.
 
@@ -165,7 +165,7 @@ From `EXTREME-SYSTEM-MIB::extremePowerSupplyTable`.
 
 - `Status`: Power supply status (notPresent, presentOK, presentNotOK) (`extremePowerSupplyStatus`).
 
-#### ExtremeXOS - Stack Members (1 minute)
+#### ExtremeXOS - Stack Members (5 minutes)
 
 Each SummitStack member's operational state, role, priority, stacking state and running image version. Rows are identified by slot.
 
@@ -177,11 +177,11 @@ From `EXTREME-STACKING-MIB::extremeStackMemberTable`.
 - `StackingEnabled`: Whether stacking is enabled for the member (1 enable, 2 disable) (`extremeStackMemberStackStatus`).
 - `ImageVersion`: The image version the member runs (`extremeStackMemberCurImageVersion`).
 
-#### ExtremeXOS - Stack Ports (1 minute)
+#### ExtremeXOS - Stack Ports (5 minutes)
 
 Each stacking port's link state and speed, and the MAC address on its far end, labelled by ifName.
 
-From `EXTREME-STACKING-MIB::extremeStackingPortTable`, one row per `ifName`.
+From `EXTREME-STACKING-MIB::extremeStackingPortTable`, one row per `ifName`, also saved as `InterfaceName` for trigger messages.
 
 - `LinkStatus`: Stacking link state (1 up, 2 down) (`extremeStackingPortLinkStatus`).
 - `SpeedBps`: Link speed, bits per second; 0 when the link is down (`extremeStackingPortLinkSpeed`).
@@ -204,7 +204,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

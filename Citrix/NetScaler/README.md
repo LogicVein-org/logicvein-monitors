@@ -1,6 +1,6 @@
 # Citrix NetScaler ADC Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -41,7 +41,7 @@ Download the MIB files for the device's software release from NetScaler's suppor
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Citrix NetScaler ADC - Operational Collection.3em` and `Citrix NetScaler ADC - Health and Performance Collection.3em`.
 3. Assign **Citrix NetScaler ADC - Operational Collection** and **Citrix NetScaler ADC - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -53,7 +53,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Citrix NetScaler ADC - Operational Collection
 
-#### NetScaler - Virtual Servers (1 minute)
+#### NetScaler - Virtual Servers (5 minutes)
 
 State, connections, requests and traffic per virtual server, as rates and as volumes since the previous poll.
 
@@ -73,7 +73,7 @@ From `NS-ROOT-MIB::vserverTable`, one row per `vsvrName`.
 
 ### Citrix NetScaler ADC - Health and Performance Collection
 
-#### NetScaler - CPU and Memory (1 minute)
+#### NetScaler - CPU and Memory (5 minutes)
 
 System CPU and memory utilization.
 
@@ -82,7 +82,7 @@ From `NS-ROOT-MIB` scalars.
 - `CpuPct`: CPU utilization, percent (`resCpuUsage`).
 - `MemoryPct`: Memory utilization, percent (`resMemUsage`).
 
-#### NetScaler - CPU per Core (1 minute)
+#### NetScaler - CPU per Core (5 minutes)
 
 Utilization of each CPU.
 
@@ -90,7 +90,7 @@ From `NS-ROOT-MIB::nsCPUTable`, one row per `nsCPUname`.
 
 - `CpuPct`: CPU utilization, percent (`nsCPUusage`).
 
-#### NetScaler - Health Counters (1 minute)
+#### NetScaler - Health Counters (5 minutes)
 
 Voltages, fan speeds and temperatures the appliance reports, by counter name.
 
@@ -98,7 +98,7 @@ From `NS-ROOT-MIB::nsSysHealthTable`, one row per `sysHealthCounterName`.
 
 - `Value`: Counter value: mV for voltages, RPM for fans, degrees Celsius for temperatures (`sysHealthCounterValue`).
 
-#### NetScaler - Disks (1 minute)
+#### NetScaler - Disks (5 minutes)
 
 Space used on each disk.
 
@@ -106,7 +106,7 @@ From `NS-ROOT-MIB::nsSysHealthDiskTable`, one row per `sysHealthDiskName`.
 
 - `SizeMB`: Total disk space, MB (`sysHealthDiskSize`).
 - `UsedMB`: Disk space used, MB (`sysHealthDiskUsed`).
-- `UsedPct`: Disk space used as a percentage of the total (`$UsedMB * 100.0 / $SizeMB`).
+- `UsedPct`: Disk space used as a percentage of the total (`($UsedMB / $SizeMB) * 100.0`).
 
 `delta(x)` is the change in counter `x` between the last two polls; `rate(x)` is that change divided by the monitor's polling period in seconds (TES's `$pollingSecs`), a per-second rate.
 
@@ -121,7 +121,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

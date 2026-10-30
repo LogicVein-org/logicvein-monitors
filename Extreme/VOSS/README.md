@@ -1,6 +1,6 @@
 # Extreme VOSS Switch Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: **Extreme VOSS Switch - Operational Collection**: not yet validated against a device; **Extreme VOSS Switch - Health and Performance Collection**: A virtual Extreme VSP running VOSS
 
@@ -67,7 +67,7 @@ From `RAPID-CITY::rcVlanTable`, one row per `rcVlanName`.
 - `RoutingEnabled`: Whether the VLAN routes (TruthValue: 1 true, 2 false) (`rcVlanRoutingEnable`).
 - `Vrf`: The VRF the VLAN belongs to (`rcVlanVrfName`).
 
-#### VOSS - MLTs (1 minute)
+#### VOSS - MLTs (5 minutes)
 
 Each multi-link trunk (MLT): its configured and running type (normal, IST, split or virtual IST), split MLT ID, whether it is enabled, its link aggregation state and minimum links, and when that state last changed, labelled by the MLT name.
 
@@ -81,7 +81,7 @@ From `RAPID-CITY::rcMltTable`, one row per `rcMltName`.
 - `MinLinks`: Active links below which the whole MLT is declared down (`rcMltAggMinLink`).
 - `StateChangeTime`: TimeTicks, saved raw: RAPID-CITY describes it as 'the time value since the interface entered its current operational state', which may be the time elapsed or the sysUpTime of the change (unverified) (`rcMltAggTimeOfLastOperChange`).
 
-#### VOSS - Virtual IST (1 minute)
+#### VOSS - Virtual IST (5 minutes)
 
 The virtual inter-switch trunk (vIST) between a pair of switches: whether its session is up, the peer's address and its VLAN.
 
@@ -91,7 +91,7 @@ From `RAPID-CITY` scalars.
 - `PeerIp`: The vIST peer's address (`rcVirtualIstPeerIp`).
 - `VlanId`: The vIST VLAN; 0 when not set (`rcVirtualIstVlanId`).
 
-#### VOSS - SPB Adjacencies (1 minute)
+#### VOSS - SPB Adjacencies (5 minutes)
 
 Each IS-IS adjacency of the SPB fabric (Fabric Connect): its state and three-way state, the neighbour's system ID, hold time and when it last came up, labelled by the neighbour's host name from the switch's own adjacency table.
 
@@ -103,7 +103,7 @@ From `ISIS-MIB::isisISAdjTable`, one row per `rcIsisAdjHostName`.
 - `HoldSecs`: The adjacency's holding time, seconds (`isisISAdjHoldTimer`).
 - `LastUp`: sysUpTime when the adjacency last came up, hundredths of a second (TimeStamp, saved raw) (`isisISAdjLastUpTime`).
 
-#### VOSS - RSMLT Peers (1 minute)
+#### VOSS - RSMLT Peers (5 minutes)
 
 Each routed split MLT (RSMLT) peer: its operational and administrative state, address, VLAN and VRF, and the hold-down and hold-up time remaining. The MIB gives no unit for the times.
 
@@ -117,11 +117,11 @@ From `RAPID-CITY::rcIpRsmltPeerTable`.
 - `HoldDownRemaining`: Hold-down time remaining, as the switch reports it (`rcIpRsmltPeerHoldDownTimeRemaining`).
 - `HoldUpRemaining`: Hold-up time remaining, as the switch reports it (`rcIpRsmltPeerHoldUpTimeRemaining`).
 
-#### VOSS - VLACP (1 minute)
+#### VOSS - VLACP (5 minutes)
 
 Virtual LACP on each port: whether it is enabled, its operational and port state, its timeout, and VLACP flaps as a rate and as a count since the previous poll, labelled by ifName.
 
-From `RAPID-CITY::rcPortVLacpTable`, one row per `ifName`.
+From `RAPID-CITY::rcPortVLacpTable`, one row per `ifName`, also saved as `InterfaceName` for trigger messages.
 
 - `AdminEnabled`: Whether VLACP is enabled on the port (TruthValue: 1 true, 2 false) (`rcPortVLacpAdminEnable`).
 - `OperEnabled`: Whether VLACP is operationally enabled (TruthValue: 1 true, 2 false) (`rcPortVLacpOperEnable`).
@@ -132,7 +132,7 @@ From `RAPID-CITY::rcPortVLacpTable`, one row per `ifName`.
 
 ### Extreme VOSS Switch - Health and Performance Collection
 
-#### VOSS - CPU and Memory (1 minute)
+#### VOSS - CPU and Memory (5 minutes)
 
 CPU and memory use per slot on VOSS (VSP) switches.
 
@@ -143,7 +143,7 @@ From `RAPID-CITY::rcKhiSlotPerfTable`.
 - `MemoryPct`: Memory utilization now, percent (`rcKhiSlotMemUtil`).
 - `MemoryFreeKB`: DRAM available, KB (`rcKhiSlotMemFree`).
 
-#### VOSS - Fans (1 minute)
+#### VOSS - Fans (5 minutes)
 
 Status of each fan and the temperature of the air entering it.
 
@@ -152,7 +152,7 @@ From `RAPID-CITY::rcChasFanTable`.
 - `Status`: Fan status (unknown, up, down, notpresent) (`rcChasFanOperStatus`).
 - `AmbientTemperatureC`: Temperature of the air entering the fan, degrees Celsius (`rcChasFanAmbientTemperature`).
 
-#### VOSS - Power Supplies (1 minute)
+#### VOSS - Power Supplies (5 minutes)
 
 Status of each power supply.
 
@@ -178,7 +178,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

@@ -1,6 +1,6 @@
 # Cisco IOS Router Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: **Cisco IOS Router - Operational Collection**: not yet validated against a device; **Cisco IOS Router - Health and Performance Collection**: Cisco 2501 and Cisco Catalyst 2950, apart from Cisco - Flash
 
@@ -68,7 +68,7 @@ These host queries match the devices the sets are meant for: `sysDescr=*Cisco IO
 
 ### Cisco IOS Router - Operational Collection
 
-#### Cisco - BGP Peers (1 minute)
+#### Cisco - BGP Peers (5 minutes)
 
 Each BGP peer's session state, administrative status and remote AS, how long the session has been established, session flaps, and updates in each direction, for routing on BGP. Rows are identified by the peer's address.
 
@@ -86,7 +86,7 @@ From `BGP4-MIB::bgpPeerTable`.
 - `UpdatesOutPerSec`: Updates sent, per second (`rate(bgpPeerOutUpdates)`).
 - `SinceUpdateInSecs`: Seconds since the last update was received (`bgpPeerInUpdateElapsedTime`).
 
-#### Cisco - OSPF Neighbors (1 minute)
+#### Cisco - OSPF Neighbors (5 minutes)
 
 Each OSPF neighbour's adjacency state, router ID and priority, adjacency state changes, and its link-state retransmission queue, for routing on OSPF. Rows are identified by the neighbour's address.
 
@@ -99,7 +99,7 @@ From `OSPF-MIB::ospfNbrTable`.
 - `StateChangesPerSec`: Adjacency state changes or errors, per second (`rate(ospfNbrEvents)`).
 - `RetransmitQueue`: Link-state advertisements waiting to be retransmitted to the neighbour (`ospfNbrLsRetransQLen`).
 
-#### Cisco - EIGRP Peers (1 minute)
+#### Cisco - EIGRP Peers (5 minutes)
 
 Each EIGRP neighbour's address, interface, hold time and uptime, smooth round-trip and retransmission timeouts, queued packets and retransmissions, for routing on EIGRP. Rows are identified by VPN, AS number and an internal peer handle, since the address column is not text.
 
@@ -115,7 +115,7 @@ From `CISCO-EIGRP-MIB::cEigrpPeerTable`.
 - `Retransmissions`: Retransmissions to the neighbour since the previous poll (`delta(cEigrpRetrans)`).
 - `RetransmissionsPerSec`: Retransmissions to the neighbour, per second (`rate(cEigrpRetrans)`).
 
-#### Cisco - HSRP Groups (1 minute)
+#### Cisco - HSRP Groups (5 minutes)
 
 Each HSRP group's first-hop redundancy state, priority and preemption, its virtual address, and the active and standby routers. Rows are identified by the interface's ifIndex and the group number.
 
@@ -128,7 +128,7 @@ From `CISCO-HSRP-MIB::cHsrpGrpTable`.
 - `ActiveRouter`: Address of the router currently active for the group (`cHsrpGrpActiveRouter`).
 - `StandbyRouter`: Address of the router currently standby for the group (`cHsrpGrpStandbyRouter`).
 
-#### Cisco - VRRP Routers (1 minute)
+#### Cisco - VRRP Routers (5 minutes)
 
 Each VRRP virtual router's first-hop redundancy state, administrative state, priority and preemption, with its master and primary addresses. Rows are identified by the interface's ifIndex and the virtual router ID.
 
@@ -141,7 +141,7 @@ From `VRRP-MIB::vrrpOperTable`.
 - `MasterIp`: Address of the current master (`vrrpOperMasterIpAddr`).
 - `PrimaryIp`: This router's address used as the source of its advertisements (`vrrpOperPrimaryIpAddr`).
 
-#### Cisco - VRRPv3 Routers (1 minute)
+#### Cisco - VRRPv3 Routers (5 minutes)
 
 Each VRRP version 3 virtual router's first-hop redundancy state, priority, preemption and accept mode, master and primary addresses, advertisement interval and uptime, for IPv4 and IPv6. Rows are identified by the interface's ifIndex, the virtual router ID and the address type; Cisco - VRRP Routers covers VRRP version 2.
 
@@ -157,7 +157,7 @@ From `VRRPV3-MIB::vrrpv3OperationsTable`.
 - `AdvertisementSecs`: Seconds between advertisements (`$vrrpv3OperationsAdvInterval / 100.0`).
 - `Uptime`: Time since the virtual router left the initialize state, hundredths of a second (TimeTicks, saved raw) (`vrrpv3OperationsUpTime`).
 
-#### Cisco IOS - IP SLA Operations (1 minute)
+#### Cisco IOS - IP SLA Operations (5 minutes)
 
 The latest result and round-trip time of each IP SLA operation, with its type, frequency and threshold from the operation's configuration, labelled by the operation's tag. An operation without a tag has an empty label.
 
@@ -169,7 +169,7 @@ From `CISCO-RTTMON-MIB::rttMonLatestRttOperTable`, one row per `rttMonCtrlAdminT
 - `FrequencySecs`: Seconds between operations (`rttMonCtrlAdminFrequency`).
 - `ThresholdMs`: Round-trip time above which the result is overThreshold, milliseconds (`rttMonCtrlAdminThreshold`).
 
-#### Cisco - Routing Table (1 minute)
+#### Cisco - Routing Table (5 minutes)
 
 Routes in the routing table, from the current and the deprecated IPv4-only count, and valid routes discarded, for the device's routing.
 
@@ -180,7 +180,7 @@ From `IP-FORWARD-MIB` scalars.
 - `RouteDiscards`: Valid routes discarded, for example for lack of memory since the previous poll (`delta(inetCidrRouteDiscards)`).
 - `RouteDiscardsPerSec`: Valid routes discarded, for example for lack of memory, per second (`rate(inetCidrRouteDiscards)`).
 
-#### Cisco - IPsec Tunnels (1 minute)
+#### Cisco - IPsec Tunnels (5 minutes)
 
 Active IKE and IPsec tunnels and encrypted traffic, for routers and ASAs that terminate VPNs.
 
@@ -195,7 +195,7 @@ From `CISCO-IPSEC-FLOW-MONITOR-MIB` scalars.
 - `BytesOut`: Bytes encrypted by all IPsec tunnels since the previous poll (`delta(cipSecGlobalHcOutOctets)`).
 - `BytesOutPerSec`: Bytes encrypted by all IPsec tunnels, per second (`rate(cipSecGlobalHcOutOctets)`).
 
-#### Cisco - IPsec Errors (1 minute)
+#### Cisco - IPsec Errors (5 minutes)
 
 IPsec packets dropped in each direction and IKE tunnel setup failures, as rates and as counts since the previous poll.
 
@@ -208,7 +208,7 @@ From `CISCO-IPSEC-FLOW-MONITOR-MIB` scalars.
 - `TunnelFailuresPerSec`: IKE tunnels this device failed to set up, as initiator or responder, per second (`rate(cikeGlobalInitTunnelFails) + rate(cikeGlobalRespTunnelFails)`).
 - `TunnelFailures`: IKE tunnels this device failed to set up, as initiator or responder since the previous poll (`delta(cikeGlobalInitTunnelFails) + delta(cikeGlobalRespTunnelFails)`).
 
-#### Cisco IOS - PPPoE Sessions (1 minute)
+#### Cisco IOS - PPPoE Sessions (5 minutes)
 
 PPPoE sessions on the router as an access concentrator: current, peak and the configured maximum, and session requests refused for exceeding a limit.
 
@@ -220,7 +220,7 @@ From `CISCO-PPPOE-MIB` scalars.
 - `ExceededErrors`: PPPoE session requests refused for exceeding a configured limit since the previous poll (`delta(cPppoeSystemExceededSessionErrors)`).
 - `ExceededErrorsPerSec`: PPPoE session requests refused for exceeding a configured limit, per second (`rate(cPppoeSystemExceededSessionErrors)`).
 
-#### Cisco - Redundancy (1 minute)
+#### Cisco - Redundancy (5 minutes)
 
 High availability between redundant route processors or supervisors: this unit's and its peer's redundancy state, whether a peer is present, whether manual switchover is inhibited, and why and when the last switchover happened.
 
@@ -235,7 +235,7 @@ From `CISCO-RF-MIB` scalars.
 
 ### Cisco IOS Router - Health and Performance Collection
 
-#### Cisco - CPU Utilization (1 minute)
+#### Cisco - CPU Utilization (5 minutes)
 
 CPU busy percentage per processor over 5 seconds, 1 minute and 5 minutes.
 
@@ -246,7 +246,7 @@ Covers the TES built-in templates *Cisco ASA - CPU Utilization [1min Avg]*, *Cis
 - `Busy1MinPct`: CPU busy over the last minute (exponentially decayed average), percent (`cpmCPUTotal1minRev`).
 - `Busy5MinPct`: CPU busy over the last 5 minutes (exponentially decayed average), percent (`cpmCPUTotal5minRev`).
 
-#### Cisco - Memory Pools (1 minute)
+#### Cisco - Memory Pools (5 minutes)
 
 Used and free memory per pool (processor, I/O) on classic IOS, and the largest free block, which shows fragmentation.
 
@@ -255,9 +255,9 @@ From `CISCO-MEMORY-POOL-MIB::ciscoMemoryPoolTable`, one row per `ciscoMemoryPool
 - `UsedBytes`: Bytes in use (`ciscoMemoryPoolUsed`).
 - `FreeBytes`: Bytes free (`ciscoMemoryPoolFree`).
 - `LargestFreeBytes`: Largest contiguous free block, bytes (`ciscoMemoryPoolLargestFree`).
-- `UsedPct`: Used as a percentage of used plus free (`$UsedBytes * 100 / ($UsedBytes + $FreeBytes)`).
+- `UsedPct`: Used as a percentage of used plus free (`($UsedBytes / ($UsedBytes + $FreeBytes)) * 100`).
 
-#### Cisco IOS - Buffer Failures (1 minute)
+#### Cisco IOS - Buffer Failures (5 minutes)
 
 Packet buffer allocation failures, a sign of memory pressure or a traffic burst the buffers cannot absorb.
 
@@ -268,7 +268,7 @@ From `OLD-CISCO-SYS-MIB` scalars.
 - `NoMemoryPerSec`: Buffer creations that failed for lack of free memory, per second (`rate(bufferNoMem)`).
 - `NoMemory`: Buffer creations that failed for lack of free memory since the previous poll (`delta(bufferNoMem)`).
 
-#### Cisco - Temperature (1 minute)
+#### Cisco - Temperature (5 minutes)
 
 Temperature per sensor against the sensor's configured threshold, and its state.
 
@@ -278,7 +278,7 @@ From `CISCO-ENVMON-MIB::ciscoEnvMonTemperatureStatusTable`, one row per `ciscoEn
 - `ThresholdC`: The sensor's configured threshold, degrees Celsius (`ciscoEnvMonTemperatureThreshold`).
 - `State`: Sensor state (normal, warning, critical, shutdown, notPresent, notFunctioning) (`ciscoEnvMonTemperatureState`).
 
-#### Cisco - Fan Status (1 minute)
+#### Cisco - Fan Status (5 minutes)
 
 State of each fan or fan tray.
 
@@ -286,7 +286,7 @@ From `CISCO-ENVMON-MIB::ciscoEnvMonFanStatusTable`, one row per `ciscoEnvMonFanS
 
 - `State`: Fan state (normal, warning, critical, shutdown, notPresent, notFunctioning) (`ciscoEnvMonFanState`).
 
-#### Cisco - Power Supply Status (1 minute)
+#### Cisco - Power Supply Status (5 minutes)
 
 State of each power supply.
 
@@ -304,8 +304,8 @@ From `CISCO-FLASH-MIB::ciscoFlashPartitionTable`, one row per `ciscoFlashPartiti
 - `FreeBytes`: Free space in the partition, bytes, 32-bit: reports 4,294,967,295 when more is free (`ciscoFlashPartitionFreeSpace`).
 - `SizeBytesExtended`: Partition size, bytes, 64-bit (CounterBasedGauge64) (`ciscoFlashPartitionSizeExtended`).
 - `FreeBytesExtended`: Free space in the partition, bytes, 64-bit (CounterBasedGauge64) (`ciscoFlashPartitionFreeSpaceExtended`).
-- `UsedPct`: Space used, percent of the partition, from the 64-bit objects (`($SizeBytesExtended - $FreeBytesExtended) * 100.0 / $SizeBytesExtended`).
-- `UsedPct32`: Space used, percent of the partition, from the 32-bit objects: wrong above 4,294,967,295 bytes (`($SizeBytes - $FreeBytes) * 100.0 / $SizeBytes`).
+- `UsedPct`: Space used, percent of the partition, from the 64-bit objects (`(($SizeBytesExtended - $FreeBytesExtended) / $SizeBytesExtended) * 100.0`).
+- `UsedPct32`: Space used, percent of the partition, from the 32-bit objects: wrong above 4,294,967,295 bytes (`(($SizeBytes - $FreeBytes) / $SizeBytes) * 100.0`).
 - `Files`: Files in the partition (`ciscoFlashPartitionFileCount`).
 - `Status`: Partition status (1 readOnly, 2 runFromFlash, 3 readWrite) (`ciscoFlashPartitionStatus`).
 
@@ -326,7 +326,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

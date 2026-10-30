@@ -1,6 +1,6 @@
 # H3C Comware Device Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -60,7 +60,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### H3C Comware Device - Operational Collection
 
-#### H3C - IPsec Tunnels (1 minute)
+#### H3C - IPsec Tunnels (5 minutes)
 
 Each IPsec phase 2 tunnel on a Comware router: its status, local and remote addresses, key type, how long it has been active and its SA's remaining time, labelled by the IPsec policy name. Rows are identified by the interface's ifIndex, the IPsec policy and the tunnel.
 
@@ -73,7 +73,7 @@ From `HH3C-IPSEC-MONITOR-MIB::hh3cIPSecTunnelTable`, one row per `hh3cIPSecTunPo
 - `ActiveSecs`: Seconds the tunnel has been active, from hundredths of a second; the invalid value 2147483647 reads 21474836.47 (`$hh3cIPSecTunActiveTime / 100.0`).
 - `RemainSecs`: The SA's remaining time, seconds; 2147483647 means invalid (`hh3cIPSecTunRemainTime`).
 
-#### H3C - IPsec Traffic (1 minute)
+#### H3C - IPsec Traffic (5 minutes)
 
 Each IPsec phase 2 tunnel's traffic in each direction and packets dropped, as rates and as volumes since the previous poll. Rows are identified by the interface's ifIndex, the IPsec policy and the tunnel.
 
@@ -88,7 +88,7 @@ From `HH3C-IPSEC-MONITOR-MIB::hh3cIPSecTunnelStatTable`.
 - `DropsOut`: Outbound packets dropped since the previous poll (`delta(hh3cIPSecTunOutDropPkts)`).
 - `DropsOutPerSec`: Outbound packets dropped, per second (`rate(hh3cIPSecTunOutDropPkts)`).
 
-#### H3C - IPsec Errors (1 minute)
+#### H3C - IPsec Errors (5 minutes)
 
 Each IPsec phase 2 tunnel's anti-replay drops and authentication, decryption and encryption failures, as rates and as counts since the previous poll. Rows are identified by the interface's ifIndex, the IPsec policy and the tunnel.
 
@@ -103,7 +103,7 @@ From `HH3C-IPSEC-MONITOR-MIB::hh3cIPSecTunnelStatTable`.
 - `EncryptFailures`: Outbound packets that failed encryption since the previous poll (`delta(hh3cIPSecTunOutEncryptFails)`).
 - `EncryptFailuresPerSec`: Outbound packets that failed encryption, per second (`rate(hh3cIPSecTunOutEncryptFails)`).
 
-#### H3C - IKE Tunnels (1 minute)
+#### H3C - IKE Tunnels (5 minutes)
 
 Each IKE (phase 1) tunnel: its state, remote address and identity, who initiated it, the negotiation mode, and its lifetime, time active and remaining time. Rows are identified by tunnel index.
 
@@ -118,7 +118,7 @@ From `HH3C-IKE-MONITOR-MIB::hh3cIKETunnelTable`.
 - `ActiveSecs`: Seconds the tunnel has been active (`hh3cIKETunActiveTime`).
 - `RemainSecs`: The SA's remaining time, seconds (`hh3cIKETunRemainTime`).
 
-#### H3C - IKE Traffic (1 minute)
+#### H3C - IKE Traffic (5 minutes)
 
 Each IKE (phase 1) tunnel's traffic in each direction and packets dropped, as rates and as volumes since the previous poll. Rows are identified by tunnel index.
 
@@ -133,7 +133,7 @@ From `HH3C-IKE-MONITOR-MIB::hh3cIKETunnelStatTable`.
 - `DropsOut`: Outbound packets dropped since the previous poll (`delta(hh3cIKETunOutDropPkts)`).
 - `DropsOutPerSec`: Outbound packets dropped, per second (`rate(hh3cIKETunOutDropPkts)`).
 
-#### H3C - RRPP Rings (1 minute)
+#### H3C - RRPP Rings (5 minutes)
 
 Each Rapid Ring Protection Protocol (RRPP) ring: whether it is enabled and active, its state, this switch's node mode, the ring level and its primary and secondary ports. Rows are identified by domain and ring.
 
@@ -147,7 +147,7 @@ From `HH3C-RRPP-MIB::hh3cRrppRingTable`.
 - `PrimaryPort`: The primary (or common) port (`hh3cRrppRingPrimaryPort`).
 - `SecondaryPort`: The secondary (or edge) port (`hh3cRrppRingSecondaryPort`).
 
-#### H3C - RRPP Ports (1 minute)
+#### H3C - RRPP Ports (5 minutes)
 
 Each RRPP ring port's role and state, and illegal RRPP packets received, as a rate and as a count since the previous poll.
 
@@ -171,7 +171,7 @@ From `HH3C-LswVLAN-MIB::hh3cdot1qVlanMIBTable`, one row per `hh3cdot1qVlanName`.
 
 ### H3C Comware Device - Health and Performance Collection
 
-#### H3C - Board Health (1 minute)
+#### H3C - Board Health (5 minutes)
 
 CPU and memory use, temperature and fault state per board or module (HH3C-ENTITY-EXT-MIB, current Comware releases).
 
@@ -182,7 +182,7 @@ From `HH3C-ENTITY-EXT-MIB::hh3cEntityExtStateTable`, one row per `entPhysicalNam
 - `Temperature`: Temperature as the entity reports it (the MIB does not state the unit) (`hh3cEntityExtTemperature`).
 - `ErrorStatus`: Fault state (normal, fanError, psuError, sensorError, hardwareFaulty and others) (`hh3cEntityExtErrorStatus`).
 
-#### H3C - Board Health (older Comware) (1 minute)
+#### H3C - Board Health (older Comware) (5 minutes)
 
 The same per-board values from H3C-ENTITY-EXT-MIB, which older Comware releases answer instead.
 
@@ -193,7 +193,7 @@ From `H3C-ENTITY-EXT-MIB::h3cEntityExtStateTable`, one row per `entPhysicalName`
 - `Temperature`: Temperature as the entity reports it (the MIB does not state the unit) (`h3cEntityExtTemperature`).
 - `ErrorStatus`: Fault state (normal, fanError, psuError, sensorError, hardwareFaulty and others) (`h3cEntityExtErrorStatus`).
 
-#### H3C - IRF Ports (1 minute)
+#### H3C - IRF Ports (5 minutes)
 
 Each IRF (stack) port's state, whether physical ports are bound to it, and the member on its far end. Rows are identified by member and port.
 
@@ -220,7 +220,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

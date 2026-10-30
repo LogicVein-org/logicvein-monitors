@@ -1,6 +1,6 @@
 # Juniper Junos Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: **Juniper Junos - Operational Collection**: not yet validated against a device; **Juniper Junos - Health and Performance Collection**: A virtual Juniper Junos device, apart from the Virtual Chassis monitors
 
@@ -60,7 +60,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Juniper Junos - Operational Collection
 
-#### Juniper - BGP Peers (1 minute)
+#### Juniper - BGP Peers (5 minutes)
 
 Session state of every BGP peer, with its remote AS. Rows are identified by the peer's routing instance and addresses (the table index); there is no name column.
 
@@ -87,7 +87,7 @@ From `JUNIPER-VLAN-MIB::jnxExVlanTable`, one row per `jnxExVlanName`.
 - `Tag`: The VLAN's 802.1Q tag (`jnxExVlanTag`).
 - `Type`: VLAN type (1 static, 2 dynamic) (`jnxExVlanType`).
 
-#### Juniper - IKE Tunnels (1 minute)
+#### Juniper - IKE Tunnels (5 minutes)
 
 Each IPsec phase 1 (IKE) tunnel on a router's Multiservices PIC or DPC: negotiation state and local role, the remote gateway and identity, lifetime and time active, and traffic as rates and as volumes since the previous poll. Rows are identified by service set, remote gateway and tunnel index.
 
@@ -104,7 +104,7 @@ From `JNX-IPSEC-MONITOR-MIB::jnxIkeTunnelTable`.
 - `BytesOut`: Bytes sent since the previous poll (`delta(jnxIkeTunOutOctets)`).
 - `BytesOutPerSec`: Bytes sent, per second (`rate(jnxIkeTunOutOctets)`).
 
-#### Juniper - IPsec Tunnels (1 minute)
+#### Juniper - IPsec Tunnels (5 minutes)
 
 Each IPsec phase 2 tunnel on a router's Multiservices PIC or DPC: its rule, remote gateway, key type and MTU, and traffic decrypted and encrypted as rates and as volumes since the previous poll. Rows are identified by service set, remote gateway and tunnel index.
 
@@ -119,7 +119,7 @@ From `JNX-IPSEC-MONITOR-MIB::jnxIpSecTunnelTable`.
 - `BytesOut`: Bytes encrypted since the previous poll (`delta(jnxIpSecTunOutEncryptedBytes)`).
 - `BytesOutPerSec`: Bytes encrypted, per second (`rate(jnxIpSecTunOutEncryptedBytes)`).
 
-#### Juniper - IPsec Errors (1 minute)
+#### Juniper - IPsec Errors (5 minutes)
 
 Packets each IPsec phase 2 tunnel dropped or failed, as rates and as counts since the previous poll: anti-replay drops, ESP authentication and decryption failures, bad headers and trailers, and all drops.
 
@@ -138,7 +138,7 @@ From `JNX-IPSEC-MONITOR-MIB::jnxIpSecTunnelTable`.
 - `Drops`: Packets dropped for any reason since the previous poll (`delta(jnxIpSecTunDroppedPkts)`).
 - `DropsPerSec`: Packets dropped for any reason, per second (`rate(jnxIpSecTunDroppedPkts)`).
 
-#### Juniper - LDP Sessions (1 minute)
+#### Juniper - LDP Sessions (5 minutes)
 
 Each MPLS LDP session's state, protocol version and keepalive hold time remaining, and when its state last changed. Rows are identified by the local LDP entity and the peer's LDP identifier, since the table has no address column.
 
@@ -169,7 +169,7 @@ From `JUNIPER-RSVP-MIB::jnxRsvpSessionTable`, one row per `jnxRsvpSessionName`.
 
 ### Juniper Junos - Health and Performance Collection
 
-#### Juniper - Component Health (1 minute)
+#### Juniper - Component Health (5 minutes)
 
 Per chassis component (routing engines, FPCs, PICs, fans, power supplies): state, temperature, CPU and memory use. Values the component does not have read 0.
 
@@ -183,7 +183,7 @@ Covers the TES built-in templates *Juniper Junos - CPU Utilization*, *Juniper Ju
 - `BufferPct`: Buffer pool utilization, percent (`jnxOperatingBuffer`).
 - `HeapPct`: Heap utilization, percent (`jnxOperatingHeap`).
 
-#### Juniper - Virtual Chassis Members (1 minute)
+#### Juniper - Virtual Chassis Members (5 minutes)
 
 Each Virtual Chassis member's role and priority, model, serial number, software version and uptime. Rows are identified by member ID.
 
@@ -196,7 +196,7 @@ From `JUNIPER-VIRTUALCHASSIS-MIB::jnxVirtualChassisMemberTable`.
 - `SoftwareVersion`: The Junos version the member runs (`jnxVirtualChassisMemberSWVersion`).
 - `Uptime`: The member's uptime, as the switch reports it (the MIB gives no unit) (`jnxVirtualChassisMemberUptime`).
 
-#### Juniper - Virtual Chassis Ports (1 minute)
+#### Juniper - Virtual Chassis Ports (5 minutes)
 
 Each Virtual Chassis port's administrative and operational state, traffic as rates and as volumes since the previous poll, and carrier transitions and CRC errors as rates and as counts, labelled by the port name. Rows are identified by member (FPC) and port name.
 
@@ -232,7 +232,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

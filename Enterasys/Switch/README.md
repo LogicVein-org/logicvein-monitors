@@ -1,6 +1,6 @@
 # Enterasys Switch Health and Performance Collection
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -37,7 +37,7 @@ Download the MIB files for the device's software release from Extreme Networks' 
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Enterasys Switch - Health and Performance Collection.3em`.
 3. Assign **Enterasys Switch - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in the set. Review the set before enabling automatic assignment in your environment.
 
@@ -47,7 +47,7 @@ These host queries match the devices the set is meant for: `sysObjectID=1.3.6.1.
 
 The set contains 4 SNMP monitors. Metrics carry friendly names; each lists the MIB object it reads or the formula it computes.
 
-### Enterasys - CPU Utilization (1 minute)
+### Enterasys - CPU Utilization (5 minutes)
 
 Load per processor over 5 seconds, 1 minute and 5 minutes.
 
@@ -57,7 +57,7 @@ From `ENTERASYS-RESOURCE-UTILIZATION-MIB::etsysResourceCpuTable`.
 - `Load1MinPct`: Busy over the last minute, percent (`etsysResourceCpuLoad1min`).
 - `Load5MinPct`: Busy over the last 5 minutes, percent (`etsysResourceCpuLoad5min`).
 
-### Enterasys - Memory and Storage (1 minute)
+### Enterasys - Memory and Storage (5 minutes)
 
 Size and free space of each RAM and flash area.
 
@@ -65,9 +65,9 @@ From `ENTERASYS-RESOURCE-UTILIZATION-MIB::etsysResourceStorageTable`, one row pe
 
 - `SizeKB`: Size of the storage area, KB (`etsysResourceStorageSize`).
 - `AvailableKB`: Space available, KB (`etsysResourceStorageAvailable`).
-- `UsedPct`: Space in use as a percentage of the size (`($SizeKB - $AvailableKB) * 100.0 / $SizeKB`).
+- `UsedPct`: Space in use as a percentage of the size (`(($SizeKB - $AvailableKB) / $SizeKB) * 100.0`).
 
-### Enterasys - Fans (1 minute)
+### Enterasys - Fans (5 minutes)
 
 State of each fan module (Cabletron chassis MIB).
 
@@ -75,7 +75,7 @@ From `CTRON-CHASSIS-MIB::ctChasFanModuleTable`.
 
 - `State`: Fan module state (infoNotAvailable, notInstalled, installedAndOperating, installedAndNotOperating) (`ctChasFanModuleState`).
 
-### Enterasys - Power Supplies (1 minute)
+### Enterasys - Power Supplies (5 minutes)
 
 State of each power supply (Cabletron chassis MIB).
 
@@ -96,7 +96,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

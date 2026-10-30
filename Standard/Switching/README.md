@@ -1,6 +1,6 @@
 # Standard Switching Operational Collection
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -37,7 +37,7 @@ ThirdEye's built-in MIB store already includes all of these modules, so no MIB i
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Standard Switching - Operational Collection.3em`.
 3. Assign **Standard Switching - Operational Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in the set. Review the set before enabling automatic assignment in your environment.
 
@@ -45,7 +45,7 @@ Automatic assignment to newly discovered devices is disabled in the set. Review 
 
 The set contains 6 SNMP monitors. Metrics carry friendly names; each lists the MIB object it reads or the formula it computes.
 
-### Switching - Spanning Tree (1 minute)
+### Switching - Spanning Tree (5 minutes)
 
 Spanning tree topology changes, time since the last change, and this bridge's root, root port, root cost and priority. BRIDGE-MIB describes a single spanning tree: on a switch running one per VLAN or per MST instance, which instance these scalars report is device-specific and unverified.
 
@@ -59,7 +59,7 @@ From `BRIDGE-MIB` scalars.
 - `RootCost`: Path cost to the root (`dot1dStpRootCost`).
 - `Priority`: This bridge's priority (`dot1dStpPriority`).
 
-### Switching - Spanning Tree Ports (1 minute)
+### Switching - Spanning Tree Ports (5 minutes)
 
 Each bridge port's spanning tree state, whether spanning tree is enabled on it, its path cost, the designated root, bridge and cost it sees, and its transitions to forwarding. Rows are identified by bridge port number, which is not necessarily the ifIndex.
 
@@ -74,7 +74,7 @@ From `BRIDGE-MIB::dot1dStpPortTable`.
 - `ForwardTransitions`: Transitions from learning to forwarding since the previous poll (`delta(dot1dStpPortForwardTransitions)`).
 - `ForwardTransitionsPerSec`: Transitions from learning to forwarding, per second (`rate(dot1dStpPortForwardTransitions)`).
 
-### Switching - VLANs (1 minute)
+### Switching - VLANs (5 minutes)
 
 The number of VLANs the switch has, and VLANs deleted, from Q-BRIDGE-MIB's device-wide counts.
 
@@ -85,7 +85,7 @@ From `Q-BRIDGE-MIB` scalars.
 - `VlanDeletes`: VLAN entries deleted since the previous poll (`delta(dot1qVlanNumDeletes)`).
 - `VlanDeletesPerSec`: VLAN entries deleted, per second (`rate(dot1qVlanNumDeletes)`).
 
-### Switching - Forwarding Database (1 minute)
+### Switching - Forwarding Database (5 minutes)
 
 Learned MAC addresses in each filtering database. Rows are identified by filtering database ID; with independent VLAN learning each VLAN has its own.
 
@@ -93,7 +93,7 @@ From `Q-BRIDGE-MIB::dot1qFdbTable`.
 
 - `DynamicEntries`: Dynamic (learned) entries in the filtering database now; the MIB types this count Counter32, so it is saved as reported (`dot1qFdbDynamicCount`).
 
-### Switching - Link Aggregation Ports (1 minute)
+### Switching - Link Aggregation Ports (5 minutes)
 
 Each port's link aggregation (LACP) state: the aggregator it selected and the one it is attached to, whether it can aggregate, and LACP protocol data units in each direction and errors, as counts and rates. Rows are identified by the port's ifIndex.
 
@@ -111,7 +111,7 @@ From `IEEE8023-LAG-MIB::dot3adAggPortTable`.
 - `UnknownIn`: Slow protocol frames received with an unknown subtype since the previous poll (`delta(dot3adAggPortStatsUnknownRx)`).
 - `UnknownInPerSec`: Slow protocol frames received with an unknown subtype, per second (`rate(dot3adAggPortStatsUnknownRx)`).
 
-### Switching - LLDP Statistics (1 minute)
+### Switching - LLDP Statistics (5 minutes)
 
 LLDP neighbour table changes, as counts and rates: neighbours added, removed, dropped for lack of space and aged out, and the time of the last change.
 
@@ -146,7 +146,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

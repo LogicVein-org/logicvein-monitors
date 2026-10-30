@@ -1,6 +1,6 @@
 # Alteon Application Switch Operational and Health and Performance Collections
 
-Last updated: 2026-10-26
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -44,7 +44,7 @@ Download the MIB files for the device's software release from Radware's support 
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Alteon Application Switch - Operational Collection.3em` and `Alteon Application Switch - Health and Performance Collection.3em`.
 3. Assign **Alteon Application Switch - Operational Collection** and **Alteon Application Switch - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -56,7 +56,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Alteon Application Switch - Operational Collection
 
-#### Alteon - Virtual Servers (1 minute)
+#### Alteon - Virtual Servers (5 minutes)
 
 Each virtual server's current and peak sessions, new sessions and traffic as rates and as counts since the previous poll, labelled by its address.
 
@@ -69,7 +69,7 @@ From `ALTEON-CHEETAH-LAYER4-MIB::slbStatVServerTable`, one row per `slbStatVServ
 - `Bytes`: Bytes received and sent since the previous poll (`delta(slbStatVServerHCOctets)`).
 - `BytesPerSec`: Bytes received and sent, per second (`rate(slbStatVServerHCOctets)`).
 
-#### Alteon - Virtual Services (1 minute)
+#### Alteon - Virtual Services (5 minutes)
 
 The state of each real server for each virtual service, its health check response time and weight, and the virtual and real ports. Rows are identified by virtual server, service and real server numbers.
 
@@ -82,7 +82,7 @@ From `ALTEON-CHEETAH-LAYER4-MIB::slbVirtServicesInfoTable`.
 - `RealPort`: The service's layer 4 real port (`slbVirtServicesInfoRport`).
 - `RealServer`: The real server number (`slbVirtServicesInfoRealServIndex`).
 
-#### Alteon - Real Servers (1 minute)
+#### Alteon - Real Servers (5 minutes)
 
 Each real server's state and overflow state, its address and VLAN, and the OSI layer its health is checked at. Rows are identified by real server number.
 
@@ -94,7 +94,7 @@ From `ALTEON-CHEETAH-LAYER4-MIB::slbRealServerInfoTable`.
 - `Vlan`: The VLAN the real server belongs to (`slbRealServerInfoVlan`).
 - `HealthLayer`: The layer the health check verifies (1 layer1, 3 layer3, 4 layer4) (`slbRealServerInfoHealthLayer`).
 
-#### Alteon - Real Server Traffic (1 minute)
+#### Alteon - Real Server Traffic (5 minutes)
 
 Each real server's current and peak sessions, and new sessions, times claimed down and traffic as rates and as counts since the previous poll. Rows are identified by real server number.
 
@@ -109,7 +109,7 @@ From `ALTEON-CHEETAH-LAYER4-MIB::slbStatRServerTable`.
 - `Bytes`: Bytes received and sent since the previous poll (`delta(slbStatRServerHCOctets)`).
 - `BytesPerSec`: Bytes received and sent, per second (`rate(slbStatRServerHCOctets)`).
 
-#### Alteon - Groups (1 minute)
+#### Alteon - Groups (5 minutes)
 
 Each real server group's current and peak sessions, and new sessions and traffic as rates and as counts since the previous poll. Rows are identified by group number.
 
@@ -122,7 +122,7 @@ From `ALTEON-CHEETAH-LAYER4-MIB::slbStatGroupTable`.
 - `Bytes`: Bytes received and sent since the previous poll (`delta(slbStatGroupHCOctets)`).
 - `BytesPerSec`: Bytes received and sent, per second (`rate(slbStatGroupHCOctets)`).
 
-#### Alteon - VRRP Virtual Routers (1 minute)
+#### Alteon - VRRP Virtual Routers (5 minutes)
 
 High availability between Alteon switches: each VRRP virtual router's state, ownership and priority, and whether it carries layer 4 services or proxies. Rows are identified by virtual router number.
 
@@ -136,7 +136,7 @@ From `ALTEON-CHEETAH-NETWORK-MIB::vrrpInfoVirtRtrTable`.
 
 ### Alteon Application Switch - Health and Performance Collection
 
-#### Alteon - CPU (1 minute)
+#### Alteon - CPU (5 minutes)
 
 Management processor utilization over 4 and 64 seconds.
 
@@ -145,7 +145,7 @@ From `ALTEON-CHEETAH-SWITCH-MIB` scalars.
 - `Cpu4SecPct`: MP CPU utilization over 4 seconds, percent (`mpCpuStatsUtil4Seconds`).
 - `Cpu64SecPct`: MP CPU utilization over 64 seconds, percent (`mpCpuStatsUtil64Seconds`).
 
-#### Alteon - Hardware (1 minute)
+#### Alteon - Hardware (5 minutes)
 
 Power supply status and the temperature sensors.
 
@@ -175,7 +175,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

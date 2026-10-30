@@ -1,6 +1,6 @@
 # Cisco IOS Switch Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: **Cisco IOS Switch - Operational Collection**: not yet validated against a device; **Cisco IOS Switch - Health and Performance Collection**: Cisco Catalyst 2950, apart from Cisco - Flash and the stack monitors
 
@@ -68,7 +68,7 @@ These host queries match the devices the sets are meant for: `sysDescr=*Catalyst
 
 ### Cisco IOS Switch - Operational Collection
 
-#### Cisco - Spanning Tree (1 minute)
+#### Cisco - Spanning Tree (5 minutes)
 
 Spanning tree topology changes, time since the last change, and this bridge's root, root port, root cost and priority. On Cisco PVST+ switches these scalars answer for the VLAN the SNMP context selects (VLAN 1 by default).
 
@@ -96,7 +96,7 @@ From `CISCO-VTP-MIB::vtpVlanTable`, one row per `vtpVlanName`.
 
 Port security on each interface: whether it is enabled, its status, secure MAC addresses against the maximum, the action on a violation, and violations, labelled by ifName.
 
-From `CISCO-PORT-SECURITY-MIB::cpsIfConfigTable`, one row per `ifName`.
+From `CISCO-PORT-SECURITY-MIB::cpsIfConfigTable`, one row per `ifName`, also saved as `InterfaceName` for trigger messages.
 
 - `Enabled`: Whether port security is enabled on the interface (TruthValue: 1 true, 2 false) (`cpsIfPortSecurityEnable`).
 - `Status`: Port security status (1 secureup, 2 securedown, 3 shutdown) (`cpsIfPortSecurityStatus`).
@@ -106,7 +106,7 @@ From `CISCO-PORT-SECURITY-MIB::cpsIfConfigTable`, one row per `ifName`.
 - `Violations`: Port security violations since the previous poll (`delta(cpsIfViolationCount)`).
 - `ViolationsPerSec`: Port security violations, per second (`rate(cpsIfViolationCount)`).
 
-#### Cisco IOS - Err-Disabled Ports (1 minute)
+#### Cisco IOS - Err-Disabled Ports (5 minutes)
 
 Each interface the switch has error-disabled, why, and when it recovers. Rows exist only while a port is err-disabled, identified by ifIndex and VLAN (0 for the whole interface).
 
@@ -115,7 +115,7 @@ From `CISCO-ERR-DISABLE-MIB::cErrDisableIfStatusTable`.
 - `Cause`: Why the port was err-disabled (1 udld, 2 bpduGuard, 3 channelMisconfig, 4 pagpFlap, 5 dtpFlap, 6 linkFlap, 7 l2ptGuard, 8 dot1xSecurityViolation, 9 portSecurityViolation, 10 gbicInvalid, 11 dhcpRateLimit, 12 unicastFlood, 13 vmps, 14 stormControl, 15 inlinePower, 16 arpInspection, 17 portLoopback, 18 packetBuffer, 19 macLimit, 20 linkMonitorFailure, 21 oamRemoteFailure, 22 dot1adIncompEtype, 23 dot1adIncompTunnel, 24 sfpConfigMismatch, 25 communityLimit, 26 invalidPolicy, 27 lsGroup, 28 ekey, 29 portModeFailure, 30 pppoeIaRateLimit, 31 oamRemoteCriticalEvent, 32 oamRemoteDyingGasp, 33 oamRemoteLinkFault, 34 mvrp, 35 tranceiverIncomp) (`cErrDisableIfStatusCause`).
 - `RecoverSecs`: Seconds until the switch attempts automatic recovery; 0 when no recovery is scheduled (`cErrDisableIfStatusTimeToRecover`).
 
-#### Cisco - HSRP Groups (1 minute)
+#### Cisco - HSRP Groups (5 minutes)
 
 Each HSRP group's first-hop redundancy state, priority and preemption, its virtual address, and the active and standby routers. Rows are identified by the interface's ifIndex and the group number.
 
@@ -128,7 +128,7 @@ From `CISCO-HSRP-MIB::cHsrpGrpTable`.
 - `ActiveRouter`: Address of the router currently active for the group (`cHsrpGrpActiveRouter`).
 - `StandbyRouter`: Address of the router currently standby for the group (`cHsrpGrpStandbyRouter`).
 
-#### Cisco - VRRP Routers (1 minute)
+#### Cisco - VRRP Routers (5 minutes)
 
 Each VRRP virtual router's first-hop redundancy state, administrative state, priority and preemption, with its master and primary addresses. Rows are identified by the interface's ifIndex and the virtual router ID.
 
@@ -141,7 +141,7 @@ From `VRRP-MIB::vrrpOperTable`.
 - `MasterIp`: Address of the current master (`vrrpOperMasterIpAddr`).
 - `PrimaryIp`: This router's address used as the source of its advertisements (`vrrpOperPrimaryIpAddr`).
 
-#### Cisco - VRRPv3 Routers (1 minute)
+#### Cisco - VRRPv3 Routers (5 minutes)
 
 Each VRRP version 3 virtual router's first-hop redundancy state, priority, preemption and accept mode, master and primary addresses, advertisement interval and uptime, for IPv4 and IPv6. Rows are identified by the interface's ifIndex, the virtual router ID and the address type; Cisco - VRRP Routers covers VRRP version 2.
 
@@ -157,7 +157,7 @@ From `VRRPV3-MIB::vrrpv3OperationsTable`.
 - `AdvertisementSecs`: Seconds between advertisements (`$vrrpv3OperationsAdvInterval / 100.0`).
 - `Uptime`: Time since the virtual router left the initialize state, hundredths of a second (TimeTicks, saved raw) (`vrrpv3OperationsUpTime`).
 
-#### Cisco - Redundancy (1 minute)
+#### Cisco - Redundancy (5 minutes)
 
 High availability between redundant route processors or supervisors: this unit's and its peer's redundancy state, whether a peer is present, whether manual switchover is inhibited, and why and when the last switchover happened.
 
@@ -170,7 +170,7 @@ From `CISCO-RF-MIB` scalars.
 - `LastSwitchoverReason`: Why the last switchover happened (1 unsupported, 2 none, 3 notKnown, 4 userInitiated, 5 userForced, 6 activeUnitFailed, 7 activeUnitRemoved) (`cRFStatusLastSwactReasonCode`).
 - `LastSwitchoverTime`: sysUpTime at the last switchover, hundredths of a second (TimeStamp, saved raw; 0 for none) (`cRFStatusFailoverTime`).
 
-#### Cisco IOS - Virtual Switch (1 minute)
+#### Cisco IOS - Virtual Switch (5 minutes)
 
 Virtual switching (VSS or StackWise Virtual): whether the switch runs as a virtual switch pair, its domain and switch ID, and the dual-active detection details.
 
@@ -181,7 +181,7 @@ From `CISCO-VIRTUAL-SWITCH-MIB` scalars.
 - `SwitchId`: This switch's ID in the virtual switch domain (`cvsSwitchID`).
 - `DualActiveDetection`: Details of the last dual-active detection, as the switch reports it (`cvsDualActiveDetectionInformation`).
 
-#### Cisco IOS - Virtual Switch Chassis (1 minute)
+#### Cisco IOS - Virtual Switch Chassis (5 minutes)
 
 Each chassis of a virtual switch pair and its role, active or standby, labelled by the chassis' entPhysicalName.
 
@@ -190,11 +190,11 @@ From `CISCO-VIRTUAL-SWITCH-MIB::cvsChassisTable`, one row per `entPhysicalName`.
 - `SwitchId`: The chassis' switch ID (`cvsChassisSwitchID`).
 - `Role`: The chassis' role (1 standalone, 2 active, 3 standby) (`cvsChassisRole`).
 
-#### Cisco IOS - Virtual Switch Links (1 minute)
+#### Cisco IOS - Virtual Switch Links (5 minutes)
 
 Each virtual switch link (VSL) between the pair: its state, the switch it forms, and configured against operational ports, labelled by the link's port channel ifName.
 
-From `CISCO-VIRTUAL-SWITCH-MIB::cvsVSLConnectionTable`, one row per `ifName`.
+From `CISCO-VIRTUAL-SWITCH-MIB::cvsVSLConnectionTable`, one row per `ifName`, also saved as `InterfaceName` for trigger messages.
 
 - `State`: Link state (1 up, 2 down) (`cvsVSLConnectOperStatus`).
 - `SwitchId`: ID of the switch the link forms (`cvsVSLCoreSwitchID`).
@@ -203,7 +203,7 @@ From `CISCO-VIRTUAL-SWITCH-MIB::cvsVSLConnectionTable`, one row per `ifName`.
 
 ### Cisco IOS Switch - Health and Performance Collection
 
-#### Cisco - CPU Utilization (1 minute)
+#### Cisco - CPU Utilization (5 minutes)
 
 CPU busy percentage per processor over 5 seconds, 1 minute and 5 minutes.
 
@@ -214,7 +214,7 @@ Covers the TES built-in templates *Cisco ASA - CPU Utilization [1min Avg]*, *Cis
 - `Busy1MinPct`: CPU busy over the last minute (exponentially decayed average), percent (`cpmCPUTotal1minRev`).
 - `Busy5MinPct`: CPU busy over the last 5 minutes (exponentially decayed average), percent (`cpmCPUTotal5minRev`).
 
-#### Cisco - Memory Pools (1 minute)
+#### Cisco - Memory Pools (5 minutes)
 
 Used and free memory per pool (processor, I/O) on classic IOS, and the largest free block, which shows fragmentation.
 
@@ -223,9 +223,9 @@ From `CISCO-MEMORY-POOL-MIB::ciscoMemoryPoolTable`, one row per `ciscoMemoryPool
 - `UsedBytes`: Bytes in use (`ciscoMemoryPoolUsed`).
 - `FreeBytes`: Bytes free (`ciscoMemoryPoolFree`).
 - `LargestFreeBytes`: Largest contiguous free block, bytes (`ciscoMemoryPoolLargestFree`).
-- `UsedPct`: Used as a percentage of used plus free (`$UsedBytes * 100 / ($UsedBytes + $FreeBytes)`).
+- `UsedPct`: Used as a percentage of used plus free (`($UsedBytes / ($UsedBytes + $FreeBytes)) * 100`).
 
-#### Cisco - Temperature (1 minute)
+#### Cisco - Temperature (5 minutes)
 
 Temperature per sensor against the sensor's configured threshold, and its state.
 
@@ -235,7 +235,7 @@ From `CISCO-ENVMON-MIB::ciscoEnvMonTemperatureStatusTable`, one row per `ciscoEn
 - `ThresholdC`: The sensor's configured threshold, degrees Celsius (`ciscoEnvMonTemperatureThreshold`).
 - `State`: Sensor state (normal, warning, critical, shutdown, notPresent, notFunctioning) (`ciscoEnvMonTemperatureState`).
 
-#### Cisco - Fan Status (1 minute)
+#### Cisco - Fan Status (5 minutes)
 
 State of each fan or fan tray.
 
@@ -243,7 +243,7 @@ From `CISCO-ENVMON-MIB::ciscoEnvMonFanStatusTable`, one row per `ciscoEnvMonFanS
 
 - `State`: Fan state (normal, warning, critical, shutdown, notPresent, notFunctioning) (`ciscoEnvMonFanState`).
 
-#### Cisco - Power Supply Status (1 minute)
+#### Cisco - Power Supply Status (5 minutes)
 
 State of each power supply.
 
@@ -261,12 +261,12 @@ From `CISCO-FLASH-MIB::ciscoFlashPartitionTable`, one row per `ciscoFlashPartiti
 - `FreeBytes`: Free space in the partition, bytes, 32-bit: reports 4,294,967,295 when more is free (`ciscoFlashPartitionFreeSpace`).
 - `SizeBytesExtended`: Partition size, bytes, 64-bit (CounterBasedGauge64) (`ciscoFlashPartitionSizeExtended`).
 - `FreeBytesExtended`: Free space in the partition, bytes, 64-bit (CounterBasedGauge64) (`ciscoFlashPartitionFreeSpaceExtended`).
-- `UsedPct`: Space used, percent of the partition, from the 64-bit objects (`($SizeBytesExtended - $FreeBytesExtended) * 100.0 / $SizeBytesExtended`).
-- `UsedPct32`: Space used, percent of the partition, from the 32-bit objects: wrong above 4,294,967,295 bytes (`($SizeBytes - $FreeBytes) * 100.0 / $SizeBytes`).
+- `UsedPct`: Space used, percent of the partition, from the 64-bit objects (`(($SizeBytesExtended - $FreeBytesExtended) / $SizeBytesExtended) * 100.0`).
+- `UsedPct32`: Space used, percent of the partition, from the 32-bit objects: wrong above 4,294,967,295 bytes (`(($SizeBytes - $FreeBytes) / $SizeBytes) * 100.0`).
 - `Files`: Files in the partition (`ciscoFlashPartitionFileCount`).
 - `Status`: Partition status (1 readOnly, 2 runFromFlash, 3 readWrite) (`ciscoFlashPartitionStatus`).
 
-#### Cisco IOS - Stack Members (1 minute)
+#### Cisco IOS - Stack Members (5 minutes)
 
 Each StackWise stack member's switch number, role, state and priorities, and its software image, labelled by the member's entPhysicalName.
 
@@ -279,16 +279,16 @@ From `CISCO-STACKWISE-MIB::cswSwitchInfoTable`, one row per `entPhysicalName`.
 - `HwPriority`: Hardware priority for the master election (`cswSwitchHwPriority`).
 - `SoftwareImage`: The member's software image (`cswSwitchSoftwareImage`).
 
-#### Cisco IOS - Stack Ports (1 minute)
+#### Cisco IOS - Stack Ports (5 minutes)
 
 Each StackWise stack port's state and the member on its far end, labelled by ifName.
 
-From `CISCO-STACKWISE-MIB::cswStackPortInfoTable`, one row per `ifName`.
+From `CISCO-STACKWISE-MIB::cswStackPortInfoTable`, one row per `ifName`, also saved as `InterfaceName` for trigger messages.
 
 - `State`: Stack port state (1 up, 2 down, 3 forcedDown) (`cswStackPortOperStatus`).
 - `Neighbor`: entPhysicalIndex of the member on the far end; 0 for none (`cswStackPortNeighbor`).
 
-#### Cisco IOS - Stack Ring (1 minute)
+#### Cisco IOS - Stack Ring (5 minutes)
 
 Whether the StackWise ring is redundant (closed), and the most members the stack can hold.
 
@@ -314,7 +314,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

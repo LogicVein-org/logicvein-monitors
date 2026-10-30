@@ -1,6 +1,6 @@
 # Palo Alto Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Palo Alto Networks VM-Series firewall with PAN-OS 11.2 MIBs
 
@@ -60,7 +60,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Palo Alto - Operational Collection
 
-#### Palo Alto - Sessions (1 minute)
+#### Palo Alto - Sessions (5 minutes)
 
 Session table load: utilization and capacity, active sessions overall and by TCP, UDP and ICMP, and SSL proxy (decryption) sessions and their utilization.
 
@@ -76,7 +76,7 @@ Covers the TES built-in templates *Palo Alto - Active Session Count*, *Palo Alto
 - `ActiveSslProxy`: Active SSL proxy sessions (`panSessionActiveSslProxy`).
 - `SslProxyUtilizationPct`: SSL proxy session utilization, percent (`panSessionSslProxyUtilization`).
 
-#### Palo Alto - Session Setup Rate (1 minute)
+#### Palo Alto - Session Setup Rate (5 minutes)
 
 New sessions per second, as the firewall computes it (panSessionCps), which the published module polls in its Session Demand and Capacity monitor beside the objects in Palo Alto - Sessions.
 
@@ -85,7 +85,7 @@ Needs `PAN-COMMON-MIB` imported: the objects this monitor polls are not in Third
 
 - `SetupsPerSec`: New sessions per second, as the firewall reports it (`panSessionCps`).
 
-#### Palo Alto - VSYS Sessions (1 minute)
+#### Palo Alto - VSYS Sessions (5 minutes)
 
 Active sessions per virtual system, and utilization where a session limit is configured.
 
@@ -97,7 +97,7 @@ Covers the TES built-in template *Palo Alto - VSYS Session Utilization*: it poll
 - `MaxSessions`: Session limit of the virtual system (0 when no limit is configured) (`panVsysMaxSessions`).
 - `VsysId`: Virtual system ID (the row index, as a value) (`panVsysId`).
 
-#### Palo Alto - VSYS Session Setup Rates (1 minute)
+#### Palo Alto - VSYS Session Setup Rates (5 minutes)
 
 New TCP, UDP and other IP sessions per second on each virtual system, as the firewall computes them, which the published module polls beside the columns in Palo Alto - VSYS Sessions.
 
@@ -108,7 +108,7 @@ Needs `PAN-COMMON-MIB` imported: the objects this monitor polls are not in Third
 - `UdpSetupsPerSec`: New UDP sessions per second, as the firewall reports it (`panVsysActiveUdpCps`).
 - `OtherIpSetupsPerSec`: New sessions of other IP protocols per second, as the firewall reports it (`panVsysActiveOtherIpCps`).
 
-#### Palo Alto - Session Drops (1 minute)
+#### Palo Alto - Session Drops (5 minutes)
 
 Why sessions and packets are refused: policy denies, scan detection, DoS protection, NAT and packet buffer exhaustion, TCP reassembly.
 
@@ -127,7 +127,7 @@ From `PAN-COMMON-MIB` scalars.
 - `TcpReassemblyDropsPerSec`: Packets dropped because TCP reassembly failed, per second (`rate(panTcpDropPacket)`).
 - `TcpReassemblyDrops`: Packets dropped because TCP reassembly failed since the previous poll (`delta(panTcpDropPacket)`).
 
-#### Palo Alto - High Availability (1 minute)
+#### Palo Alto - High Availability (5 minutes)
 
 High-availability mode, this firewall's state and its peer's state.
 
@@ -137,7 +137,7 @@ From `PAN-COMMON-MIB` scalars.
 - `State`: This firewall's HA state, as text (`panSysHAState`).
 - `PeerState`: The peer's HA state, as text (`panSysHAPeerState`).
 
-#### Palo Alto - Panorama Connection (1 minute)
+#### Palo Alto - Panorama Connection (5 minutes)
 
 Whether the firewall is connected to its Panorama servers.
 
@@ -146,7 +146,7 @@ From `PAN-COMMON-MIB` scalars.
 - `Panorama1`: Connection to the first Panorama server (connected, not-connected) (`panMgmtPanoramaConnected`).
 - `Panorama2`: Connection to the second Panorama server (connected, not-connected) (`panMgmtPanorama2Connected`).
 
-#### Palo Alto - Admin Sessions (1 minute)
+#### Palo Alto - Admin Sessions (5 minutes)
 
 Administrator sessions open on the firewall, which the published module polls beside the Panorama connection state in Palo Alto - Panorama Connection.
 
@@ -155,7 +155,7 @@ Needs `PAN-COMMON-MIB` imported: the objects this monitor polls are not in Third
 
 - `AdminSessions`: Administrator sessions open (`panMgmtNumAdminSessions`).
 
-#### Palo Alto - GlobalProtect Gateway (1 minute)
+#### Palo Alto - GlobalProtect Gateway (5 minutes)
 
 GlobalProtect gateway load: active tunnels against the maximum.
 
@@ -200,7 +200,7 @@ Needs `PAN-COMMON-MIB` imported: the objects this monitor polls are not in Third
 - `AntivirusReleaseDate`: Release date of the installed antivirus definitions, as text (`panSysAvReleaseDate`).
 - `WildfireReleaseDate`: Release date of the installed WildFire content, as text (`panSysWfReleaseDate`).
 
-#### Palo Alto - Log Delivery Health (1 minute)
+#### Palo Alto - Log Delivery Health (5 minutes)
 
 Incoming and written log rates as the firewall reports them, and logs forwarded to external destinations, dropped from the forwarding queue and failed to send, each as a count since the previous poll and a per-second rate.
 
@@ -216,7 +216,7 @@ Needs `PAN-COMMON-MIB` imported: the objects this monitor polls are not in Third
 - `SendErrors`: External forwarding send errors since the previous poll (`delta(panDeviceLoggingExtFwdStatsSendErr)`).
 - `SendErrorsPerSec`: External forwarding send errors, per second (`rate(panDeviceLoggingExtFwdStatsSendErr)`).
 
-#### Palo Alto - External Log Forwarding Queues (1 minute)
+#### Palo Alto - External Log Forwarding Queues (5 minutes)
 
 Per external log type: logs enqueued, sent and dropped, each as a count since the previous poll and a per-second rate, with the current queue depth and the firewall's one minute average send rate.
 
@@ -232,7 +232,7 @@ Needs `PAN-COMMON-MIB` imported: the objects this monitor polls are not in Third
 - `QueueDepth`: Logs waiting in the queue (typed Counter64 in the published module, but a current depth, so saved as it is) (`panDeviceLoggingExtFwdStatsTableQueueDepth`).
 - `SendRate1Min`: Send rate averaged over the last minute, as the firewall reports it (`panDeviceLoggingExtFwdStatsTable1minAvgSendRate`).
 
-#### Palo Alto - Log Collector Connections (1 minute)
+#### Palo Alto - Log Collector Connections (5 minutes)
 
 Each connection to a log collector: its address, hostname and status, labelled by connection type as the published module labels it.
 
@@ -257,7 +257,7 @@ Needs `PAN-COMMON-MIB` imported: the objects this monitor polls are not in Third
 
 ### Palo Alto - Health and Performance Collection
 
-#### Palo Alto - CPU Load (1 minute)
+#### Palo Alto - CPU Load (5 minutes)
 
 Load per processor (management and data plane), averaged over the last minute, labelled by the processor's description from hrDeviceTable (same index), as TES's own Palo Alto CPU template does.
 
@@ -266,14 +266,14 @@ Covers the TES built-in templates *Palo Alto - CPU-UseRate*, *CPU Stats*: it pol
 
 - `LoadPct`: Share of the last minute the processor was not idle, percent (`hrProcessorLoad`).
 
-#### Palo Alto - Storage (1 minute)
+#### Palo Alto - Storage (5 minutes)
 
 Use of each memory and disk storage area the device reports.
 
 From `HOST-RESOURCES-MIB::hrStorageTable`, one row per `hrStorageDescr`.
 Covers the TES built-in templates *Palo Alto - MemoryUsage*, *Storage Stats*: it polls every object they poll, under its own names.
 
-- `UsedPct`: Used as a percentage of the storage area's size (`$hrStorageUsed * 100 / $hrStorageSize`).
+- `UsedPct`: Used as a percentage of the storage area's size (`($hrStorageUsed / $hrStorageSize) * 100`).
 - `SizeBytes`: Size, bytes (`$hrStorageSize * $hrStorageAllocationUnits`).
 - `UsedBytes`: Used, bytes (`$hrStorageUsed * $hrStorageAllocationUnits`).
 
@@ -295,7 +295,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

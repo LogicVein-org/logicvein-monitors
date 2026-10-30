@@ -1,6 +1,6 @@
 # Apresia Switch Operational and Health and Performance Collections
 
-Last updated: 2026-10-26
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -44,7 +44,7 @@ Download the MIB files for the device's software release from APRESIA Systems' s
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Apresia Switch - Operational Collection.3em` and `Apresia Switch - Health and Performance Collection.3em`.
 3. Assign **Apresia Switch - Operational Collection** and **Apresia Switch - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -56,7 +56,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Apresia Switch - Operational Collection
 
-#### Apresia - MLAG (1 minute)
+#### Apresia - MLAG (5 minutes)
 
 Multi-chassis link aggregation (MLAG) on AEOS (Apresia-Series) switches: this switch's and the peer's priority and status, by stack unit. Rows are identified by stack unit (chassis) index.
 
@@ -68,7 +68,7 @@ From `Apresia-Series::hclAeosMlagTable`.
 - `PeerStatus`: The peer's MLAG status (1 normal, 2 unreach, 3 abnormal, 4 unknown) (`hclAeosMlagPeerStatus`).
 - `PeerDomain`: The peer's MLAG domain (`hclAeosMlagPeerDomain`).
 
-#### Apresia - MLAG Port Groups (1 minute)
+#### Apresia - MLAG Port Groups (5 minutes)
 
 Each MLAG port group on AEOS (Apresia-Series) switches: this switch's and the peer's status for the group. Rows are identified by stack unit and port group, whose INDEX clause is unverified.
 
@@ -77,7 +77,7 @@ From `Apresia-Series::hclAeosMlagPortGroupTable`.
 - `MyStatus`: This switch's status for the group (1 normal, 2 abnormal, 3 down, 4 listening) (`hclAeosMlagPortGroupMyStatus`).
 - `PeerStatus`: The peer's status for the group (1 normal, 2 abnormal, 3 down, 4 listening) (`hclAeosMlagPortGroupPeerStatus`).
 
-#### Apresia - MMRP-Plus Ports (1 minute)
+#### Apresia - MMRP-Plus Ports (5 minutes)
 
 Each port in an MMRP-Plus ring, on AEOS (Apresia-Series) switches: its role in the ring, its status, and its connection status. Rows are identified by index values whose INDEX clause is unverified.
 
@@ -87,7 +87,7 @@ From `Apresia-Series::hclMmrpPlusIfTable`.
 - `Status`: Port status (1 unknown, 2 down, 3 failureUp, 4 listening, 5 forwarding, 6 blocking) (`hclMmrpPlusIfStatus`).
 - `Connection`: Connection status (1 unknown, 2 normal, 3 abnormal, 4 unreach) (`hclMmrpPlusIfConnection`).
 
-#### Apresia - MMRP-Plus Statistics (1 minute)
+#### Apresia - MMRP-Plus Statistics (5 minutes)
 
 MMRP-Plus control packets on each ring port, on AEOS (Apresia-Series) switches: link-down, link-up and FDB-flush packets received and sent, as rates and as counts since the previous poll. Rows are identified by ifIndex.
 
@@ -106,7 +106,7 @@ From `Apresia-Series::hclMmrpPlusStatsTable`.
 - `FdbFlushOut`: FDB-flush packets sent since the previous poll (`delta(hclMmrpPlusFdbFlushOutPkts)`).
 - `FdbFlushOutPerSec`: FDB-flush packets sent, per second (`rate(hclMmrpPlusFdbFlushOutPkts)`).
 
-#### Apresia - PoE System (1 minute)
+#### Apresia - PoE System (5 minutes)
 
 Each Power over Ethernet (PoE) system block on AEOS (Apresia-Series) switches: whether it is normal. Rows are identified by PoE system block.
 
@@ -114,7 +114,7 @@ From `Apresia-Series::hclAeosPoeSystemTable`.
 
 - `Status`: PoE system status (1 abnormal, 2 normal) (`hclAeosPoeSystemStatus`).
 
-#### Apresia NP - MMRP-Plus Ports (1 minute)
+#### Apresia NP - MMRP-Plus Ports (5 minutes)
 
 Each port in an MMRP-Plus ring, on ApresiaNP switches: its role in the ring, its status, and its connection status. Rows are identified by index values whose INDEX clause is unverified.
 
@@ -124,7 +124,7 @@ From `ApresiaNP-Series::npMmrpPlusIfTable`.
 - `Status`: Port status (1 unknown, 2 down, 3 failureUp, 4 listening, 5 forwarding, 6 blocking) (`npMmrpPlusIfStatus`).
 - `Connection`: Connection status (1 unknown, 2 normal, 3 abnormal, 4 unreach) (`npMmrpPlusIfConnection`).
 
-#### Apresia NP - MMRP-Plus Statistics (1 minute)
+#### Apresia NP - MMRP-Plus Statistics (5 minutes)
 
 MMRP-Plus control packets on each ring port, on ApresiaNP switches: link-down, link-up and FDB-flush packets received and sent, as rates and as counts since the previous poll. Rows are identified by ifIndex.
 
@@ -143,7 +143,7 @@ From `ApresiaNP-Series::npMmrpPlusStatsTable`.
 - `FdbFlushOut`: FDB-flush packets sent since the previous poll (`delta(npMmrpPlusStatsFdbFlushOutPkts)`).
 - `FdbFlushOutPerSec`: FDB-flush packets sent, per second (`rate(npMmrpPlusStatsFdbFlushOutPkts)`).
 
-#### Apresia NP - PoE System (1 minute)
+#### Apresia NP - PoE System (5 minutes)
 
 Each Power over Ethernet (PoE) system block (power supply and controller) on ApresiaNP switches: whether it is normal. Rows are identified by PoE system block.
 
@@ -151,7 +151,7 @@ From `ApresiaNP-Series::npPoeSystemTable`.
 
 - `Status`: PoE system status (1 abnormal, 2 normal) (`npPoeSystemStatus`).
 
-#### Apresia NP - PoE Ports (1 minute)
+#### Apresia NP - PoE Ports (5 minutes)
 
 Power over Ethernet (PoE) on each port of ApresiaNP switches: its power delivery status, the power it consumes, and the first reason its admin status changed. Rows are identified by port group and port.
 
@@ -161,7 +161,7 @@ From `ApresiaNP-Series::npPoePortTable`.
 - `PowerUsed`: Power consumed, 0 when not powered; the MIB description states no unit (`npPoePortConsumptionPower`).
 - `AdminStatusCause`: The first reason the admin status changed (1 unknown, 2 cli, 3 snmp, 4 pdMonitoringIcmp, 5 pdMonitoringAcl, 6 pdMonitoringPowerRising, 7 pdMonitoringPowerFalling) (`npPoePortPowerAdminStatusCause`).
 
-#### Apresia GM200 - MMRP-Plus Ports (1 minute)
+#### Apresia GM200 - MMRP-Plus Ports (5 minutes)
 
 Each port in an MMRP-Plus ring, on ApresiaLight GM200 switches: its role in the ring, its status, and its connection status. Rows are identified by index values whose INDEX clause is unverified.
 
@@ -171,7 +171,7 @@ From `APLGM200MIB::gm2MmrpPlusIfTable`.
 - `Status`: Port status (1 unknown, 2 down, 3 failureUp, 4 listening, 5 forwarding) (`gm2MmrpPlusIfStatus`).
 - `Connection`: Connection status (1 unknown, 2 normal, 3 abnormal, 4 unreach) (`gm2MmrpPlusIfConnection`).
 
-#### Apresia GM200 - MMRP-Plus Statistics (1 minute)
+#### Apresia GM200 - MMRP-Plus Statistics (5 minutes)
 
 MMRP-Plus control packets on each ring port, on ApresiaLight GM200 switches: link-down, link-up and FDB-flush packets received and sent, as rates and as counts since the previous poll. Rows are identified by ifIndex.
 
@@ -190,7 +190,7 @@ From `APLGM200MIB::gm2MmrpPlusStatsTable`.
 - `FdbFlushOut`: FDB-flush packets sent since the previous poll (`delta(gm2MmrpPlusFdbFlushOutPkts)`).
 - `FdbFlushOutPerSec`: FDB-flush packets sent, per second (`rate(gm2MmrpPlusFdbFlushOutPkts)`).
 
-#### Apresia GM300 - MMRP-Plus Ports (1 minute)
+#### Apresia GM300 - MMRP-Plus Ports (5 minutes)
 
 Each port in an MMRP-Plus ring, on ApresiaLight GM300 switches: its role in the ring, its status, and its connection status. Rows are identified by index values whose INDEX clause is unverified.
 
@@ -200,7 +200,7 @@ From `APLGM300MIB::gm3MmrpPlusIfTable`.
 - `Status`: Port status (1 unknown, 2 down, 3 failureUp, 4 listening, 5 forwarding) (`gm3MmrpPlusIfStatus`).
 - `Connection`: Connection status (1 unknown, 2 normal, 3 abnormal, 4 unreach) (`gm3MmrpPlusIfConnection`).
 
-#### Apresia GM300 - MMRP-Plus Statistics (1 minute)
+#### Apresia GM300 - MMRP-Plus Statistics (5 minutes)
 
 MMRP-Plus control packets on each ring port, on ApresiaLight GM300 switches: link-down, link-up and FDB-flush packets received and sent, as rates and as counts since the previous poll. Rows are identified by ifIndex.
 
@@ -221,7 +221,7 @@ From `APLGM300MIB::gm3MmrpPlusStatsTable`.
 
 ### Apresia Switch - Health and Performance Collection
 
-#### Apresia - Fans (1 minute)
+#### Apresia - Fans (5 minutes)
 
 Status of each fan.
 
@@ -229,7 +229,7 @@ From `Apresia-Series::hclFANTable`.
 
 - `Status`: Fan status (1 abnormal, 2 normal, 3 unknown, 4 not running, 5 control error) (`hclFANStatus`).
 
-#### Apresia - Power Supplies (1 minute)
+#### Apresia - Power Supplies (5 minutes)
 
 Status of each power supply and its fan.
 
@@ -238,7 +238,7 @@ From `Apresia-Series::hclPowerTable`.
 - `Status`: Power supply status (1 abnormal, 2 normal, 3 unknown, 4 no power module available) (`hclPowerStatus`).
 - `FanStatus`: Power supply fan status (1 abnormal, 2 normal, 3 unknown) (`hclPowerFANStatus`).
 
-#### Apresia - CPU (1 minute)
+#### Apresia - CPU (5 minutes)
 
 CPU utilization on AEOS models. The MIB gives no description for these objects, so the values are as the switch reports them.
 
@@ -248,7 +248,7 @@ Covers the TES built-in template *Apresia Switch(AEOS) - CPU Utilization*: it po
 - `Utilization`: CPU utilization as reported (no MIB description; likely percent) (`hclAeosCpuUtilization`).
 - `SampleRate`: The sample rate the utilization is measured over, as reported (no MIB description) (`hclAeosCpuSampleRate`).
 
-#### Apresia NP - Stack (1 minute)
+#### Apresia NP - Stack (5 minutes)
 
 The ApresiaNP stack as a whole: its topology, this unit's ID, the master and backup master IDs, and the number of units.
 
@@ -260,7 +260,7 @@ From `ApresiaNP-Series` scalars.
 - `BackupMaster`: The backup master's box ID (`npStackBackupMasterId`).
 - `Units`: Units in the stack (`npStackBoxCount`).
 
-#### Apresia NP - Stack Units (1 minute)
+#### Apresia NP - Stack Units (5 minutes)
 
 Each ApresiaNP stack unit: whether it is present, its priority, and its firmware version. Rows are identified by box ID.
 
@@ -270,7 +270,7 @@ From `ApresiaNP-Series::npStackTable`.
 - `Priority`: The unit's stacking priority; with preemption disabled the master reads 0, the highest, whatever its configured priority (`npStackPriority`).
 - `Version`: The unit's firmware version (`npStackRuntimeVersion`).
 
-#### Apresia NP - Stack Links (1 minute)
+#### Apresia NP - Stack Links (5 minutes)
 
 The link state of each ApresiaNP stack unit's two stacking interfaces (SIO1 and SIO2): one port, two ports, or down. Rows are identified by box ID.
 
@@ -279,7 +279,7 @@ From `ApresiaNP-Series::npStackBandwidthTable`.
 - `Sio1`: SIO1 link (1 onePort, 2 twoPorts, 3 linkDown, 255 none) (`npStackBandwidthSIO1Act`).
 - `Sio2`: SIO2 link (1 onePort, 2 twoPorts, 3 linkDown, 255 none) (`npStackBandwidthSIO2Act`).
 
-#### Apresia NP - CPU (1 minute)
+#### Apresia NP - CPU (5 minutes)
 
 CPU utilization on ApresiaNP switches, with the period it is calculated over.
 
@@ -289,7 +289,7 @@ Covers the TES built-in template *Apresia NP Series - CPU Utilization*: it polls
 - `CpuPct`: CPU utilization, percent (`npCpuUtilizationValue`).
 - `SampleSecs`: The period the utilization is calculated over, seconds (`npCpuUtilizationSampleRate`).
 
-#### Apresia GM200 - CPU and Memory (1 minute)
+#### Apresia GM200 - CPU and Memory (5 minutes)
 
 CPU and memory on ApresiaLight GM200 switches: CPU utilization averaged over 1 and 5 minutes, DRAM used and total, and DRAM and flash utilization.
 
@@ -303,7 +303,7 @@ Covers the TES built-in templates *ApresiaLight GM200 - CPU Utilization [1min Av
 - `MemoryTotalKb`: Total DRAM, kilobytes (`gm2DramUtilizationTotal`).
 - `FlashPct`: Flash memory in use, percent of the total (`gm2FlashUtilizationPercentage`).
 
-#### Apresia GM300 - CPU and Memory (1 minute)
+#### Apresia GM300 - CPU and Memory (5 minutes)
 
 CPU and memory on ApresiaLight GM300 switches: CPU utilization averaged over 1 and 5 minutes, DRAM used and total, and DRAM and flash utilization.
 
@@ -334,7 +334,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

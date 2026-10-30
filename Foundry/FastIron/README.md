@@ -1,6 +1,6 @@
 # Foundry FastIron Switch Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -48,7 +48,7 @@ Download the MIB files for the device's software release from the FastIron vendo
 1. In **Inventory**, use **Tools > SNMP System Info** to verify that ThirdEye can query each target device.
 2. Go to **Monitors > Sets** and import `Foundry FastIron Switch - Operational Collection.3em` and `Foundry FastIron Switch - Health and Performance Collection.3em`.
 3. Assign **Foundry FastIron Switch - Operational Collection** and **Foundry FastIron Switch - Health and Performance Collection** to the appropriate devices.
-4. Wait at least 1 minute so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
+4. Wait at least 5 minutes so every monitor has had a collection opportunity, then confirm that current data is present for the applicable monitors.
 
 Automatic assignment to newly discovered devices is disabled in both sets. Review the sets before enabling automatic assignment in your environment.
 
@@ -60,7 +60,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Foundry FastIron Switch - Operational Collection
 
-#### Foundry - LAGs (1 minute)
+#### Foundry - LAGs (5 minutes)
 
 Each link aggregation group (LAG): its type, deployment state, number of ports, ifIndex and ID. Rows are identified by LAG name, which ThirdEye can show as OID digits.
 
@@ -72,7 +72,7 @@ From `FOUNDRY-LAG-MIB::fdryLinkAggregationGroupTable`.
 - `IfIndex`: The LAG's ifIndex, 0 if none (`fdryLinkAggregationGroupIfIndex`).
 - `Id`: The LAG's ID (`fdryLinkAggregationGroupId`).
 
-#### Foundry - LACP Ports (1 minute)
+#### Foundry - LACP Ports (5 minutes)
 
 Each port of a dynamic or keepalive LAG: its admin and link status, its LACP status, and the partner's system ID and key. Rows are identified by LAG name and ifIndex.
 
@@ -84,7 +84,7 @@ From `FOUNDRY-LAG-MIB::fdryLinkAggregationGroupLacpPortTable`.
 - `PartnerSystem`: The LACP partner's system ID (`fdryLinkAggregationGroupLacpPortLacpRemoteSysID`).
 - `PartnerKey`: The LACP partner's key (`fdryLinkAggregationGroupLacpPortLacpRemoteKey`).
 
-#### Foundry - VRRP Virtual Routers (1 minute)
+#### Foundry - VRRP Virtual Routers (5 minutes)
 
 Each VRRP virtual router: its state, current priority and the master's address, with transitions to master and to backup, advertisements of higher priority and priority-zero advertisements from the master, as rates and as counts since the previous poll. Rows are identified by ifIndex and virtual router ID; VRRP-E (VRRP extended) routers are included.
 
@@ -102,7 +102,7 @@ From `FOUNDRY-SN-IP-VRRP-MIB::snVrrpVirRtr2Table`.
 - `PriorityZero`: Priority-zero advertisements received from the master since the previous poll (`delta(snVrrpVirRtr2RxPriorityZeroFromMasterCnts)`).
 - `PriorityZeroPerSec`: Priority-zero advertisements received from the master, per second (`rate(snVrrpVirRtr2RxPriorityZeroFromMasterCnts)`).
 
-#### Foundry - VSRP Virtual Routers (1 minute)
+#### Foundry - VSRP Virtual Routers (5 minutes)
 
 Each VSRP virtual router: its state, current priority and the master's address, with transitions to master and to backup, advertisements of higher priority and priority-zero advertisements from the master, as rates and as counts since the previous poll. Rows are identified by VLAN ID and virtual router ID.
 
@@ -120,7 +120,7 @@ From `FOUNDRY-SN-VSRP-MIB::snVsrpVirRtrTable`.
 - `PriorityZero`: Priority-zero advertisements received from the master since the previous poll (`delta(snVsrpVirRtrRxPriorityZeroFromMasterCnts)`).
 - `PriorityZeroPerSec`: Priority-zero advertisements received from the master, per second (`rate(snVsrpVirRtrRxPriorityZeroFromMasterCnts)`).
 
-#### Foundry - MCT Peers (1 minute)
+#### Foundry - MCT Peers (5 minutes)
 
 Each multi-chassis trunking (MCT) cluster peer: its state, why it is down if it is, and its uptime. Rows are identified by cluster ID and peer address, labelled by the peer's inter-chassis link (ICL) name.
 
@@ -130,7 +130,7 @@ From `BROCADE-MCT-CLUSTER-MIB::brcdMctClusterPeerTable`, one row per `brcdMctClu
 - `DownReason`: Why the peer is down (1 none, 2 loopbackInterfaceDown, 3 iclInterfaceDown, 4 upgradeInProgress, 5 routeNotAvailable, 6 iclVeDown, 7 rBridgeIdMismatch, 8 clusterIdMismatch, 9 keepAliveTimeMismatch, 10 holdTimeMismatch, 11 fastFailoverMismatch, 12 shutdownMesgFromPeer, 13 tcpKeepAliveTimeout, 14 tcpConnCloseMesg, 15 holdTimeoutExpired, 16 sendStateTimeoutExpired, 17 recvStateTimeoutExpired, 18 initMesgSendFail, 19 keepAliveMesgSendFail, 20 invalidAppMesgRecv, 21 badProtocolVersionPktRecv, 22 badPduLengthPktRecv, 23 unknownCcpPktRecv, 24 invalidCcpPktRecv, 25 internalCcpErrorRecv, 26 ccpTcpCommFail) (`brcdMctClusterPeerDownReason`).
 - `Uptime`: Time since the peer came up, hundredths of a second, 0 when it is not up (TimeInterval, saved raw) (`brcdMctClusterPeerUpTime`).
 
-#### Foundry - MCT Clients (1 minute)
+#### Foundry - MCT Clients (5 minutes)
 
 Each multi-chassis trunking (MCT) cluster client: its state, whether it is deployed, and its ifIndex. Rows are identified by cluster ID and client name, which ThirdEye can show as OID digits.
 
@@ -140,7 +140,7 @@ From `BROCADE-MCT-CLUSTER-MIB::brcdMctClusterClientTable`.
 - `Deployment`: Deployment state (1 deploy, 2 undeploy) (`brcdMctClusterClientDeploy`).
 - `IfIndex`: The client interface's ifIndex (`brcdMctClusterClientIfIndex`).
 
-#### Foundry - Metro Rings (1 minute)
+#### Foundry - Metro Rings (5 minutes)
 
 Each Metro Ring Protocol (MRP) ring: this switch's role, the ring's operational state, the primary and secondary ports' states, and ring health packets sent and received, ring state changes and topology changes received, as rates and as counts since the previous poll. Rows are identified by VLAN ID and ring ID, labelled by ring name.
 
@@ -159,7 +159,7 @@ From `FOUNDRY-SN-MRP-MIB::snMetroRingTable`, one row per `snMetroRingName`.
 - `TopologyChanges`: Topology change packets received since the previous poll (`delta(snMetroRingTCRBPDUReceived)`).
 - `TopologyChangesPerSec`: Topology change packets received, per second (`rate(snMetroRingTCRBPDUReceived)`).
 
-#### Foundry - PoE Ports (1 minute)
+#### Foundry - PoE Ports (5 minutes)
 
 Power over Ethernet (PoE) on each port: whether it is enabled, the power it consumes, and the powered device's type. Rows are identified by ifIndex.
 
@@ -169,7 +169,7 @@ From `FOUNDRY-POE-MIB::snAgentPoePortTable`.
 - `ConsumedMw`: Power consumed by the port, milliwatts (`snAgentPoePortConsumed`).
 - `DeviceType`: The powered device's type (802.3af, 802.3at or legacy) (`snAgentPoePortType`).
 
-#### Foundry - PoE Units (1 minute)
+#### Foundry - PoE Units (5 minutes)
 
 Power over Ethernet (PoE) power on each unit: total capacity, unallocated capacity, and allocation requests honored. Rows are identified by unit.
 
@@ -181,7 +181,7 @@ From `FOUNDRY-POE-MIB::snAgentPoeUnitTable`.
 
 ### Foundry FastIron Switch - Health and Performance Collection
 
-#### Foundry - CPU Utilization (1 minute)
+#### Foundry - CPU Utilization (5 minutes)
 
 CPU utilization per slot and CPU, one row per measuring interval (1, 5, 60 and 300 seconds).
 
@@ -191,7 +191,7 @@ Covers the TES built-in template *Rucks Switch - CPU Utilization*: it polls ever
 - `CpuPct`: CPU utilization, percent (`snAgentCpuUtilPercent`).
 - `IntervalSec`: Interval the row's utilization covers, seconds (`snAgentCpuUtilInterval`).
 
-#### Foundry - Memory and Chassis Temperature (1 minute)
+#### Foundry - Memory and Chassis Temperature (5 minutes)
 
 Dynamic memory utilization and chassis temperature.
 
@@ -201,7 +201,7 @@ Covers the TES built-in template *Rucks Switch - Memory Utilization*: it polls e
 - `MemoryPct`: System dynamic memory utilization, percent (`snAgGblDynMemUtil`).
 - `ChassisTemperatureC`: Chassis temperature, degrees Celsius (the MIB counts half degrees) (`$snChasActualTemperature / 2.0`).
 
-#### Foundry - Temperature Sensors (1 minute)
+#### Foundry - Temperature Sensors (5 minutes)
 
 Temperature per sensor.
 
@@ -209,7 +209,7 @@ From `FOUNDRY-SN-AGENT-MIB::snAgentTempTable`, one row per `snAgentTempSensorDes
 
 - `TemperatureC`: Sensor temperature, degrees Celsius (the MIB counts half degrees) (`$snAgentTempValue / 2.0`).
 
-#### Foundry - Fans (1 minute)
+#### Foundry - Fans (5 minutes)
 
 State of each fan.
 
@@ -217,7 +217,7 @@ From `FOUNDRY-SN-AGENT-MIB::snChasFanTable`, one row per `snChasFanDescription`.
 
 - `Status`: Fan state (other, normal, failure) (`snChasFanOperStatus`).
 
-#### Foundry - Power Supplies (1 minute)
+#### Foundry - Power Supplies (5 minutes)
 
 State of each power supply.
 
@@ -225,7 +225,7 @@ From `FOUNDRY-SN-AGENT-MIB::snChasPwrSupplyTable`, one row per `snChasPwrSupplyD
 
 - `Status`: Power supply state (other, normal, failure) (`snChasPwrSupplyOperStatus`).
 
-#### Foundry - Stack Units (1 minute)
+#### Foundry - Stack Units (5 minutes)
 
 Each stack unit: its role, state and priority, both stack ports' states, its left and right neighbor units, and its software version. Rows are identified by unit.
 
@@ -240,7 +240,7 @@ From `FOUNDRY-SN-STACKING-MIB::snStackingOperUnitTable`.
 - `RightNeighbor`: Right neighbor unit, 0 for none (`snStackingOperUnitNeighbor2`).
 - `Version`: The running software image version (`snStackingOperUnitImgVer`).
 
-#### Foundry - Stack (1 minute)
+#### Foundry - Stack (5 minutes)
 
 The stack as a whole: its topology and whether the system is in stacking mode.
 
@@ -266,7 +266,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

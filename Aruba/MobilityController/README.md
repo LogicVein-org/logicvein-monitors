@@ -1,6 +1,6 @@
 # ArubaOS Mobility Controller Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Aruba 7010 running ArubaOS 8.12.0.1 SSR (build 89864)
 
@@ -67,7 +67,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### ArubaOS Mobility Controller - Operational Collection
 
-#### Aruba Controller - WLANs (1 minute)
+#### Aruba Controller - WLANs (5 minutes)
 
 Clients and access points per advertised network (ESSID). The ESSID table has no name column besides its index, so the rows carry no label and TES shows each ESSID as OID digits (its length, then the character codes); a label of the index object showed the same digits on a controller.
 
@@ -78,7 +78,7 @@ From `WLSX-WLAN-MIB::wlsxWlanESSIDTable`.
 - `AccessPointsDown`: Access points configured for the ESSID that are not operational (`wlanESSIDNumAccessPointsDown`).
 - `EncryptionType`: Encryption the ESSID uses (`wlanESSIDEncryptionType`).
 
-#### Aruba Controller - Radios (1 minute)
+#### Aruba Controller - Radios (5 minutes)
 
 Load per access point radio: associated clients, utilization and channel. One row per radio, so this monitor is large on big deployments.
 
@@ -93,7 +93,7 @@ From `WLSX-WLAN-MIB::wlsxWlanRadioTable`, one row per `wlanAPRadioAPName`.
 - `TransmitPowerX10`: Transmit power, as the object reports it (its name says ten times the power) (`wlanAPRadioTransmitPower10x`).
 - `ActiveBssids`: Active BSSIDs on the radio (`wlanAPRadioNumActiveBSSIDs`).
 
-#### Aruba Controller - Access Point Stability (1 minute)
+#### Aruba Controller - Access Point Stability (5 minutes)
 
 Each access point's status and stability: time since it last bootstrapped with the controller, and how often it has bootstrapped and rebooted, with its group, model and software.
 
@@ -109,7 +109,7 @@ From `WLSX-WLAN-MIB::wlsxWlanAPTable`, one row per `wlanAPName`.
 - `IpAddress`: Access point IP address (`wlanAPIpAddress`).
 - `WarmReboots`: Warm reboots of the access point (a running total) (`wlanAPNumWarmReboots`).
 
-#### Aruba Controller - Authentication Servers (1 minute)
+#### Aruba Controller - Authentication Servers (5 minutes)
 
 State of each authentication server the controller uses: its type, whether it is enabled and in service, its average response time and the requests outstanding. Request counts are in Aruba Controller - Authentication Requests.
 
@@ -121,7 +121,7 @@ From `WLSX-AUTH-MIB::wlsxAuthenticationServerTable`, one row per `authServerAddr
 - `AvgResponseMs`: Average response time, milliseconds (`authServerAvgResponseTime`).
 - `Outstanding`: Requests currently outstanding (`authServerOutStandingRequests`).
 
-#### Aruba Controller - Authentication Requests (1 minute)
+#### Aruba Controller - Authentication Requests (5 minutes)
 
 Requests each authentication server handled, succeeded, failed and timed out, each as a count since the previous poll and a per-second rate.
 
@@ -136,7 +136,7 @@ From `WLSX-AUTH-MIB::wlsxAuthenticationServerTable`, one row per `authServerAddr
 - `Timeouts`: Requests that timed out since the previous poll (`delta(authServerTimeouts)`).
 - `TimeoutsPerSec`: Requests that timed out, per second (`rate(authServerTimeouts)`).
 
-#### Aruba Controller - HA Profiles (1 minute)
+#### Aruba Controller - HA Profiles (5 minutes)
 
 Each high-availability profile: this controller's membership, the profile's state and role, and whether state sync and inter-controller heartbeats are enabled, with the active, standby and total access points from wlsxHighAvalabilityApTable, matched to the profile rows by row index as the published logicvein-monitors module reads them. The profile's pre-shared key is not polled.
 
@@ -150,7 +150,7 @@ From `WLSX-HA-MIB::wlsxHighAvalabilityConfigTable`, one row per `haMembership`.
 - `StandbyAps`: Access points on standby on this controller (`haStandbyAPs`).
 - `TotalAps`: Access points in the profile (`haTotalAPs`).
 
-#### Aruba Controller - HA Heartbeats (1 minute)
+#### Aruba Controller - HA Heartbeats (5 minutes)
 
 Heartbeats between this controller and each active controller in its HA group: requests sent and responses received, as counts since the previous poll and as rates, and the heartbeats last missed.
 
@@ -164,7 +164,7 @@ From `WLSX-HA-MIB::wlsxIntercontrollerHbtTable`, one row per `haActiveCtrlIp`.
 - `ReferenceCount`: Reference count of the heartbeat session (`haReferenceCnt`).
 - `LastMissedTime`: When a heartbeat was last missed, as text (`haLastHbtMissedTime`).
 
-#### Aruba Controller - Wireless Demand (1 minute)
+#### Aruba Controller - Wireless Demand (5 minutes)
 
 Load on the controller: access points connected, stations associated, and users by authentication type.
 
@@ -179,9 +179,9 @@ From `WLSX-USER-MIB`, `WLSX-WLAN-MIB` scalars.
 - `MacUsers`: Users authenticated by MAC address (`wlsxNumOfUsersMAC`).
 - `Stateful8021xUsers`: Users authenticated by stateful 802.1X (`wlsxNumOfUsersStateful8021x`).
 
-#### Aruba Controller - Role and Configuration State (1 minute)
+#### Aruba Controller - Role and Configuration State (5 minutes)
 
-The controller's role, its conductor's address, and the configuration IDs and whether configuration updates from the conductor are enabled, every minute as the published logicvein-monitors module polls them.
+The controller's role, its conductor's address, and the configuration IDs and whether configuration updates from the conductor are enabled. The published logicvein-monitors module polls them every minute; this monitor polls every 5 minutes.
 
 From `WLSX-SYSTEMEXT-MIB` scalars.
 
@@ -213,7 +213,7 @@ From `WLSX-SYSTEMEXT-MIB::wlsxSysExtSwitchLicenseTable`, one row per `sysExtLice
 
 ### ArubaOS Mobility Controller - Health and Performance Collection
 
-#### Aruba Controller - CPU Utilization (1 minute)
+#### Aruba Controller - CPU Utilization (5 minutes)
 
 Load per processor, averaged over the last minute.
 
@@ -222,7 +222,7 @@ Covers the TES built-in template *Aruba WLC - CPU Utilization*: it polls every o
 
 - `LoadPct`: Share of the last minute the processor was not idle, percent (`sysExtProcessorLoad`).
 
-#### Aruba Controller - Memory (1 minute)
+#### Aruba Controller - Memory (5 minutes)
 
 Used and free memory.
 
@@ -231,9 +231,9 @@ Covers the TES built-in template *Aruba WLC - Memory Utilization*: it polls ever
 
 - `UsedKB`: Used memory, KB (`sysExtMemoryUsed`).
 - `FreeKB`: Free memory, KB (`sysExtMemoryFree`).
-- `UsedPct`: Used memory as a percentage of the total (`$UsedKB * 100 / $sysExtMemorySize`).
+- `UsedPct`: Used memory as a percentage of the total (`($UsedKB / $sysExtMemorySize) * 100`).
 
-#### Aruba Controller - Storage (1 minute)
+#### Aruba Controller - Storage (5 minutes)
 
 Use of each storage filesystem (flash).
 
@@ -242,9 +242,9 @@ Covers the TES built-in template *Aruba WLC - Storage Utilization*: it polls eve
 
 - `StorageType`: Storage type (1 RAM, 2 flash memory) (`sysExtStorageType`).
 - `UsedMB`: Used storage, MB (`sysExtStorageUsed`).
-- `UsedPct`: Used storage as a percentage of the filesystem size (`$UsedMB * 100 / $sysExtStorageSize`).
+- `UsedPct`: Used storage as a percentage of the filesystem size (`($UsedMB / $sysExtStorageSize) * 100`).
 
-#### Aruba Controller - Fans (1 minute)
+#### Aruba Controller - Fans (5 minutes)
 
 Status of each fan.
 
@@ -252,7 +252,7 @@ From `WLSX-SYSTEMEXT-MIB::wlsxSysExtFanTable`.
 
 - `Status`: Fan status (`sysExtFanStatus`).
 
-#### Aruba Controller - Power Supplies (1 minute)
+#### Aruba Controller - Power Supplies (5 minutes)
 
 Status of each power supply.
 
@@ -279,7 +279,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 

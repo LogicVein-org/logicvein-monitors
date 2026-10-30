@@ -1,6 +1,6 @@
 # Huawei VRP Device Operational and Health and Performance Collections
 
-Last updated: 2026-10-24
+Last updated: 2026-10-30
 
 Tested against: Not yet validated against a device.
 
@@ -59,7 +59,7 @@ These host queries match the devices the sets are meant for: `sysObjectID=1.3.6.
 
 ### Huawei VRP Device - Operational Collection
 
-#### Huawei - Eth-Trunks (1 minute)
+#### Huawei - Eth-Trunks (5 minutes)
 
 Each Eth-Trunk (link aggregation): its type, working mode and state, minimum links and bandwidth, and its ifIndex. Rows are identified by trunk number.
 
@@ -72,7 +72,7 @@ From `HUAWEI-IF-EXT-MIB::hwTrunkIfTable`.
 - `BandwidthMbps`: Current bandwidth, megabits per second; -1 for a trunk other than an Eth-Trunk (`hwTrunkBandwidth`).
 - `IfIndex`: The trunk interface's ifIndex (`hwTrunkIfIndex`).
 
-#### Huawei - Eth-Trunk Members (1 minute)
+#### Huawei - Eth-Trunk Members (5 minutes)
 
 Each Eth-Trunk member port's state, whether LACP selected it, whether LACP is enabled and in which mode, whether it is the master of a master/backup trunk, and its weight and priority. Rows are identified by trunk number and the member's ifIndex.
 
@@ -86,7 +86,7 @@ From `HUAWEI-IF-EXT-MIB::hwTrunkMemTable`.
 - `Weight`: The port's share of the trunk's load (`hwTrunkPortWeight`).
 - `Priority`: The port's LACP priority (`hwTrunkPortPriority`).
 
-#### Huawei - MSTP Instances (1 minute)
+#### Huawei - MSTP Instances (5 minutes)
 
 Each multiple spanning tree instance: this bridge's priority, the root bridge, root port and path cost, the configured root type and remaining hops. Rows are identified by instance ID.
 
@@ -99,7 +99,7 @@ From `HUAWEI-MSTP-MIB::hwMstpInstanceTable`.
 - `RootType`: Configured root role (0 normal, 1 secondary, 2 primary) (`hwMstpiRootType`).
 - `RemainingHops`: Remaining hops (`hwMstpiRemainingHops`).
 
-#### Huawei - RRPP Rings (1 minute)
+#### Huawei - RRPP Rings (5 minutes)
 
 Each Rapid Ring Protection Protocol (RRPP) ring: whether it is enabled and active, its state, this switch's node mode, the ring level and its primary and secondary ports. Rows are identified by domain and ring.
 
@@ -113,7 +113,7 @@ From `HUAWEI-RRPP-MIB::hwRrppRingTable`.
 - `PrimaryPort`: ifIndex of the primary (or common) port; 0 when unset (`hwRrppRingPrimaryPort`).
 - `SecondaryPort`: ifIndex of the secondary (or edge) port; 0 when unset (`hwRrppRingSecondaryPort`).
 
-#### Huawei - RRPP Ports (1 minute)
+#### Huawei - RRPP Ports (5 minutes)
 
 Each RRPP ring port's role and state, and illegal RRPP packets received and packets that failed to send, as rates and as counts since the previous poll.
 
@@ -140,7 +140,7 @@ From `HUAWEI-L2VLAN-MIB::hwL2VlanMIBTable`, one row per `hwL2VlanName`.
 
 ### Huawei VRP Device - Health and Performance Collection
 
-#### Huawei - Board Health (1 minute)
+#### Huawei - Board Health (5 minutes)
 
 CPU and memory use, temperature and state per board or module (HUAWEI-ENTITY-EXTENT-MIB).
 
@@ -151,7 +151,7 @@ From `HUAWEI-ENTITY-EXTENT-MIB::hwEntityStateTable`, one row per `entPhysicalNam
 - `Temperature`: Temperature as the entity reports it (the MIB does not state the unit) (`hwEntityTemperature`).
 - `OperStatus`: Operational state (`hwEntityOperStatus`).
 
-#### Huawei - System CPU and Memory (1 minute)
+#### Huawei - System CPU and Memory (5 minutes)
 
 System-wide CPU busy percentage and memory, from the older HUAWEI-MLSR-DEV-ADM-MIB objects many VRP releases still answer.
 
@@ -161,9 +161,9 @@ From `HUAWEI-MLSR-DEV-ADM-MIB` scalars.
 - `Cpu5MinPct`: CPU busy over the last 5 minutes, percent (`hwCpuCostRatePer5Minute`).
 - `UsedBytes`: Memory in use, bytes (`hwUsedMemory`).
 - `FreeBytes`: Memory free, bytes (`hwFreeMemory`).
-- `MemoryUsedPct`: Memory in use as a percentage of used plus free (`$UsedBytes * 100.0 / ($UsedBytes + $FreeBytes)`).
+- `MemoryUsedPct`: Memory in use as a percentage of used plus free (`($UsedBytes / ($UsedBytes + $FreeBytes)) * 100.0`).
 
-#### Huawei - System Environment (1 minute)
+#### Huawei - System Environment (5 minutes)
 
 Temperature, fan and power status from the older system-wide objects.
 
@@ -190,7 +190,7 @@ To run the **SNMP System Info** tool, open **Inventory**, select the target devi
 After installation:
 
 1. Run **SNMP System Info** for every assigned device and confirm that it succeeds.
-2. Confirm that the one-minute monitors have current samples.
+2. Confirm that the 5-minute monitors have current samples.
 3. Verify that each applicable table monitor returns the expected rows.
 4. Compare values with the device's own interface or CLI before creating alert thresholds.
 
